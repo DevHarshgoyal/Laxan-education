@@ -1,0 +1,39 @@
+.tab-container {
+  padding: 0 20px;
+}
+
+.tab-card {
+  padding: 6px;
+  border-radius: 24px;
+}
+
+.tab-btn {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 10px 0;
+  border-radius: 18px;
+  font-size: 13px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tab-btn.active {
+  background-color: var(--navy);
+  color: var(--gold);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 400px) {
+  .tab-container {
+    padding: 0 10px;
+  }
+  .tab-btn {
+    font-size: 11px;
+    padding: 8px 0;
+  }
+}

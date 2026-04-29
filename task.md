@@ -1,0 +1,5 @@
+- [x] Restructure the repository into `frontend` and `backend` directories.
+- [x] Initialize Node.js backend with Express and CORS.
+- [x] Implement backend API endpoints (`/api/profile`, `/api/fees`, `/api/attendance`, `/api/marks`, `/api/syllabus`, `/api/remarks`).
+- [x] Update frontend components (`TeacherRemarks`, `SyllabusTab`, `MarksTab`, `AttendanceTab`, `FeeStatus`, `ProfileCard`) to fetch dynamic data.
+- [x] Update imports and relative paths if any were broken by the restructuring.

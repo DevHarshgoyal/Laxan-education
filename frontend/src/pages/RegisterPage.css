@@ -1,0 +1,446 @@
+/* ──────────────────────────────────────────────────────────
+   RegisterPage.css  —  Laxan Education Student Registration
+   Matches the dark-navy dashboard theme exactly.
+   ────────────────────────────────────────────────────────── */
+
+/* ── Outer wrapper: fills the #root container ────────────── */
+.rp-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--navy);   /* same as app body bg */
+  overflow-x: hidden;
+}
+
+/* ── Scrollable body between header and footer ───────────── */
+.rp-page-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 16px 32px;
+  overflow-y: auto;
+}
+
+/* ── Form (full-width, matches 480px cap of #root) ────────── */
+.rp-form {
+  width: 100%;
+  max-width: 448px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ── Glass card ──────────────────────────────────────────── */
+.rp-form-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 20px;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ── Card title ──────────────────────────────────────────── */
+.rp-card-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--cream);
+  text-align: center;
+  letter-spacing: 0.3px;
+  padding-bottom: 16px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+/* ── Photo upload zone ───────────────────────────────────── */
+.rp-photo-zone {
+  border: 1.5px dashed rgba(255, 255, 255, 0.25);
+  border-radius: 14px;
+  padding: 28px 16px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  background: rgba(255, 255, 255, 0.03);
+  min-height: 140px;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.rp-photo-zone:hover,
+.rp-photo-zone:focus {
+  border-color: rgba(201, 168, 76, 0.55);
+  background: rgba(201, 168, 76, 0.05);
+  outline: none;
+}
+
+.rp-photo-icon {
+  font-size: 36px;
+  filter: grayscale(0.3);
+}
+
+.rp-photo-hint {
+  font-size: 13px;
+  color: rgba(240, 237, 232, 0.45);
+  font-weight: 500;
+}
+
+.rp-browse-btn {
+  margin-top: 4px;
+  padding: 7px 20px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--cream);
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.rp-browse-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.rp-photo-preview {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2.5px solid var(--gold);
+}
+
+/* ── Field ───────────────────────────────────────────────── */
+.rp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 16px;
+}
+
+.rp-field:last-child { margin-bottom: 0; }
+
+/* ── Labels ──────────────────────────────────────────────── */
+.rp-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(240, 237, 232, 0.80);
+}
+
+.rp-label--caps {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(240, 237, 232, 0.55);
+}
+
+.rp-required {
+  color: var(--gold);
+  margin-left: 2px;
+}
+
+/* ── Input wrapper (for icon prefix) ────────────────────── */
+.rp-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.rp-input-icon {
+  position: absolute;
+  left: 13px;
+  font-size: 15px;
+  pointer-events: none;
+  line-height: 1;
+}
+
+/* ── Base input ──────────────────────────────────────────── */
+.rp-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 13px 16px;
+  font-size: 15px;
+  font-family: 'Inter', sans-serif;
+  color: var(--cream);
+  outline: none;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  -webkit-appearance: none;
+}
+
+/* With icon — add left padding */
+.rp-input--icon {
+  padding-left: 42px;
+}
+
+.rp-input::placeholder {
+  color: rgba(240, 237, 232, 0.30);
+}
+
+.rp-input:focus {
+  border-color: var(--gold);
+  background: rgba(201, 168, 76, 0.07);
+  box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.13);
+}
+
+.rp-input--error {
+  border-color: var(--red) !important;
+  background: rgba(239, 68, 68, 0.07) !important;
+}
+
+.rp-input--error:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.16) !important;
+}
+
+/* ── Select ──────────────────────────────────────────────── */
+.rp-select {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23C9A84C' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 40px;
+}
+
+.rp-select option {
+  background: #152238;
+  color: var(--cream);
+}
+
+/* ── Textarea ────────────────────────────────────────────── */
+.rp-textarea {
+  resize: none;
+  line-height: 1.5;
+}
+
+/* ── Errors ──────────────────────────────────────────────── */
+.rp-error {
+  font-size: 12px;
+  color: #fb7185;
+  font-weight: 500;
+}
+
+.rp-api-error {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.30);
+  border-radius: 12px;
+  padding: 13px 16px;
+  font-size: 14px;
+  color: #fca5a5;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* ── Button row ──────────────────────────────────────────── */
+.rp-btn-row {
+  display: flex;
+  gap: 12px;
+}
+
+/* ── Register button (blue, matching screenshot) ─────────── */
+.rp-submit-btn {
+  flex: 1;
+  padding: 15px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #3B6FE8, #2554d0);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: transform 0.18s, box-shadow 0.18s, opacity 0.18s;
+  box-shadow: 0 6px 20px rgba(59, 111, 232, 0.40);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  letter-spacing: 0.4px;
+}
+
+.rp-submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(59, 111, 232, 0.50);
+}
+
+.rp-submit-btn:active:not(:disabled) { transform: translateY(0); }
+
+.rp-submit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* ── Cancel button ───────────────────────────────────────── */
+.rp-cancel-btn {
+  flex: 1;
+  padding: 15px;
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(240, 237, 232, 0.75);
+  font-size: 16px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s;
+  min-height: 52px;
+}
+
+.rp-cancel-btn:hover {
+  background: rgba(255, 255, 255, 0.11);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+/* ── Spinner ─────────────────────────────────────────────── */
+.rp-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Footnote ────────────────────────────────────────────── */
+.rp-footnote {
+  text-align: center;
+  font-size: 12px;
+  color: rgba(240, 237, 232, 0.35);
+  margin-top: -2px;
+}
+
+/* ── Footer bar ──────────────────────────────────────────── */
+.rp-footer {
+  text-align: center;
+  font-size: 11px;
+  color: rgba(240, 237, 232, 0.30);
+  padding: 14px 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  letter-spacing: 0.3px;
+}
+
+/* ─────────────────────────────────────────────────────────
+   Success Screen
+   ───────────────────────────────────────────────────────── */
+.rp-success-card {
+  width: 100%;
+  max-width: 448px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(201, 168, 76, 0.22);
+  border-radius: 22px;
+  padding: 36px 24px 32px;
+  text-align: center;
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.rp-success-icon {
+  font-size: 52px;
+  margin-bottom: 14px;
+  filter: drop-shadow(0 4px 12px rgba(60, 200, 126, 0.4));
+}
+
+.rp-success-title {
+  font-size: 21px;
+  font-weight: 800;
+  color: var(--green);
+  margin-bottom: 8px;
+}
+
+.rp-success-msg {
+  font-size: 14px;
+  color: rgba(240, 237, 232, 0.75);
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.rp-id-badge {
+  background: linear-gradient(135deg, rgba(201,168,76,0.15), rgba(201,168,76,0.06));
+  border: 1.5px solid rgba(201, 168, 76, 0.38);
+  border-radius: 14px;
+  padding: 14px 18px;
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rp-id-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.8;
+}
+
+.rp-id-value {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--gold);
+  letter-spacing: 1.5px;
+}
+
+.rp-success-details {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rp-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rp-detail-label {
+  font-size: 12px;
+  color: rgba(240, 237, 232, 0.48);
+  font-weight: 500;
+}
+
+.rp-detail-val {
+  font-size: 13px;
+  color: var(--cream);
+  font-weight: 600;
+}
+
+.rp-save-note {
+  font-size: 13px;
+  color: rgba(240, 237, 232, 0.50);
+  margin-bottom: 22px;
+  line-height: 1.5;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+
+/* ── Date picker icon tint ───────────────────────────────── */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(70%) sepia(60%) saturate(400%) hue-rotate(5deg);
+  cursor: pointer;
+}
+
+/* ── Mobile tweaks ───────────────────────────────────────── */
+@media (max-width: 400px) {
+  .rp-form-card  { padding: 20px 16px; }
+  .rp-card-title { font-size: 15px; }
+  .rp-btn-row    { flex-direction: column; }
+}

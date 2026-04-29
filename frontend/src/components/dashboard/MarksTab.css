@@ -1,0 +1,50 @@
+.marks-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.marks-table th, .marks-table td {
+  padding: 12px 8px;
+  text-align: center;
+  font-size: 13px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.marks-table th:first-child, .marks-table td:first-child {
+  text-align: left;
+}
+
+.marks-table th:last-child, .marks-table td:last-child {
+  text-align: right;
+}
+
+.marks-table th {
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  padding-top: 0;
+}
+
+.marks-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table-responsive {
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.table-responsive::-webkit-scrollbar {
+  width: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background: var(--navy-light);
+  border-radius: 4px;
+}
+
+.marks-table th {
+  position: sticky;
+  top: 0;
+  background-color: var(--white);
+  z-index: 1;
+}

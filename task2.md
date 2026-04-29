@@ -1,0 +1,7 @@
+- [x] Create `config`, `models`, `controllers`, and `routes` directories.
+- [x] Move `db.js` to `config/db.js`.
+- [x] Move `queries.js` to `models/queries.js`.
+- [x] Create `controllers/dashboardController.js` and migrate route handlers.
+- [x] Create `routes/dashboardRoutes.js` and set up API endpoints.
+- [x] Update `server.js` to mount the new routes.
+- [x] Test the backend server to ensure API endpoints function correctly.

@@ -1,0 +1,144 @@
+npx -y create-vite@latest laxan-dashboard --template react
+cmd.exe /c "npx -y create-vite@latest laxan-dashboard --template react"
+cmd.exe /c "npm install"
+cmd.exe /c "npm run build"
+cmd.exe /c "npm run dev -- --port 5173"
+
+sql password : root
+
+mkdir frontend; mkdir backend; Move-Item -Path "src", "public", "index.html", "package.json", "package-lock.json", "vite.config.js", "eslint.config.js", "README.md", "node_modules" -Destination "frontend"
+cd backend; cmd /c "npm init -y"; cmd /c "npm install express cors"
+cd backend; node server.js
+npm run dev
+Invoke-RestMethod -Uri "http://localhost:5000/api/profile"
+
+
+cmd /c "npm install mysql2 dotenv"
+node seed.js
+
+
+# View any student's dashboard by changing the ID in the URL:
+http://localhost:5173/profile/LX-2026-5927
+http://localhost:5173/profile/LX-2026-1234
+
+# Register page (default):
+http://localhost:5173/
+
+
+
+npm install @aws-sdk/client-s3 multer
+cmd /c "npm install @aws-sdk/client-s3 multer"
+cmd /c "node migrate.js"
+
+If you’re building an app and need **free storage for image uploads**, don’t just pick “any cloud drive”—you want something with **API access, CDN delivery, and scalability**. Here are the best free options depending on your use case:
+
+---
+
+# 🧠 Best free storage options for app image uploads
+
+## 🚀 1. Developer-friendly (best choice)
+
+These are made specifically for apps:
+
+* **Cloudflare R2**
+
+  * ✅ ~10 GB free storage
+  * ✅ **Zero egress fees** (huge advantage for apps)
+  * ✅ S3-compatible API
+  * 👉 Best for: production apps, scaling later
+    ([AgentDeals][1])
+
+* **Cloudinary**
+
+  * ✅ Free tier with image transformations (resize, compress, optimize)
+  * ✅ Built-in CDN + URL-based transformations
+  * 👉 Best for: image-heavy apps (profiles, galleries)
+    ([AgentDeals][1])
+
+* **ImageKit**
+
+  * ✅ Free bandwidth + real-time optimization
+  * ✅ CDN + URL transformations
+  * 👉 Best for: fast image delivery globally
+    ([AgentDeals][1])
+
+---
+
+## ☁️ 2. General cloud storage (simple but limited for apps)
+
+* **Google Drive**
+
+  * ✅ 15 GB free
+  * ❌ Not ideal for public image hosting/CDN
+    ([TechYorker][2])
+
+* **MEGA**
+
+  * ✅ 20 GB free
+  * ❌ No native CDN / not optimized for app serving
+    ([Cloudwards][3])
+
+* **pCloud**
+
+  * ✅ ~10 GB free
+  * ❌ More for personal storage than backend usage
+    ([Cloudwards][3])
+
+👉 Use these only for prototypes or internal tools.
+
+---
+
+## 🧪 3. Other dev options (free tier but smaller)
+
+* **Backblaze B2** → 10 GB free
+* **Google Cloud Storage** → 5 GB free
+* **Uploadcare** → limited uploads + transformations
+  ([AgentDeals][1])
+
+---
+
+## 💡 What most developers actually do
+
+From real-world dev discussions:
+
+> “For public image links + app usage → Cloudinary or Cloudflare Images are better suited.” ([Reddit][4])
+
+That’s because:
+
+* You get **direct image URLs**
+* Built-in **optimization (resize, compress)**
+* Works perfectly with frontend apps
+
+---
+
+# 🏆 Simple recommendation
+
+* **Best overall (free + scalable):** → Cloudflare R2
+* **Best for images specifically:** → Cloudinary
+* **Best beginner/simple:** → Google Drive (temporary only)
+
+---
+
+# ⚠️ Important (most people miss this)
+
+Free tiers usually have:
+
+* bandwidth limits
+* request limits
+* or no CDN
+
+👉 If your app grows, you’ll need to upgrade or switch.
+
+---
+
+If you want, tell me:
+
+* your tech stack (Node, Firebase, etc.)
+* expected users / image size
+
+I can suggest the **exact setup (API + code + architecture)** for your app.
+
+[1]: https://agentdeals.dev/storage-alternatives?utm_source=chatgpt.com "Best Free Cloud Storage for Developers in 2026 — Object Storage, Media CDN & File Hosting Compared — AgentDeals"
+[2]: https://techyorker.com/8-best-free-cloud-storage-services-to-store-photos-video-and-files-in-2023/?utm_source=chatgpt.com "8 Best Free Cloud Storage Services To Store Photos, Video, and Files in 2023 - TechYorker"
+[3]: https://www.cloudwards.net/best-free-cloud-storage-for-photos/?utm_source=chatgpt.com "Best Free Cloud Storage for Photos in 2026"
+[4]: https://www.reddit.com/r/cloudstorage/comments/1spodn3/image_storage_options/?utm_source=chatgpt.com "Image storage options"

@@ -1,0 +1,10 @@
+- [ ] Install `mysql2` and `dotenv` packages in the backend.
+- [ ] Create `backend/.env` template for database credentials.
+- [ ] Create `backend/db.js` to establish the MySQL connection pool.
+- [ ] Create a `backend/seed.js` script to automatically create tables and seed initial static data.
+- [ ] Rewrite `/api/profile` endpoint to query the database.
+- [ ] Rewrite `/api/fees` endpoint to query the database.
+- [ ] Rewrite `/api/attendance` endpoint to query the database.
+- [ ] Rewrite `/api/marks` endpoint to query the database.
+- [ ] Rewrite `/api/syllabus` endpoint to query the database.
+- [ ] Rewrite `/api/remarks` endpoint to query the database.

@@ -1,0 +1,35 @@
+.remark-box {
+  background-color: var(--cream);
+  border-left: 4px solid var(--green);
+  padding: 12px 16px;
+  border-radius: 8px;
+}
+
+.remark-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.remark-text {
+  font-size: 13px;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.remarks-list {
+  max-height: 250px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.remarks-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.remarks-list::-webkit-scrollbar-thumb {
+  background: var(--navy-light);
+  border-radius: 4px;
+}
