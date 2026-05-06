@@ -5,7 +5,11 @@ const dashboardRoutes = require('./routes/dashboardRoutes');
 const registrationRoutes = require('./routes/registrationRoutes');
 
 const app = express();
-app.use(cors());
+const corsOptions = {
+  origin: ['https://trackprofile.id', 'https://www.trackprofile.id', 'http://localhost:5173'],
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 
 const PORT = process.env.PORT || 5000;

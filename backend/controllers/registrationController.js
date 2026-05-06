@@ -6,7 +6,14 @@ const s3 = require('../config/s3');
 
 // ── Helpers ────────────────────────────────────────────────
 
-
+/**
+ * Generates a random profile ID with the current year (e.g., LX-2026-0142)
+ */
+function generateProfileId() {
+  const year = new Date().getFullYear();
+  const randomNum = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+  return `LX-${year}-${randomNum}`;
+}
 
 /**
  * Upload a file buffer to S3 and return the public URL.
@@ -21,8 +28,7 @@ async function uploadToS3(file) {
     Bucket: bucket,
     Key: key,
     Body: file.buffer,
-    ContentType: file.mimetype,
-    ACL: 'public-read',   // makes the object publicly accessible
+    ContentType: file.mimetype
   }));
 
   // Construct the standard public S3 URL
@@ -38,9 +44,10 @@ async function uploadToS3(file) {
  * File:   photo (optional)
  */
 const registerStudent = async (req, res) => {
-  const { student_id, name, course_name, dob, phone, email, address, gender } = req.body;
+  // const { student_id, name, course_name, dob, phone, email, address, gender } = req.body;
+  const { student_id, name, course_name, gender } = req.body;
 
-  if (!student_id || !name || !course_name || !dob || !gender) {
+  if (!student_id || !name || !course_name || !gender) {
     return res.status(400).json({
       success: false,
       message: 'student_id, name, course_name, gender and dob are required fields.',
@@ -60,6 +67,9 @@ const registerStudent = async (req, res) => {
       });
     }
 
+    // ── Generate Profile ID ──
+    const profile_id = generateProfileId();
+
     // ── Upload photo to S3 (if provided) ──
     let photo_url = null;
     if (req.file) {
@@ -74,7 +84,7 @@ const registerStudent = async (req, res) => {
     // ── Insert student row ──
     const [result] = await pool.query(
       queries.registerStudent,
-      [student_id.trim(), name.trim(), course_name.trim(), dob.trim(), 0, photo_url, null, gender]
+      [student_id.trim(), name.trim(), course_name.trim(), null, 0, photo_url, null, gender, profile_id]
     );
 
     // ── Seed a blank fees row ──
@@ -91,11 +101,11 @@ const registerStudent = async (req, res) => {
         student_id: student_id.trim(),
         name: name.trim(),
         course_name: course_name.trim(),
-        dob: dob.trim(),
+        dob: null,
         gender: gender || null,
-        phone: phone || null,
-        email: email || null,
-        address: address || null,
+        phone: null,
+        email: null,
+        address: null,
         photo_url,
         attendance_pct: 0,
       },

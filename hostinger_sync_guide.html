@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MySQL → Hostinger Sync Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Outfit:wght@300;400;600;700;800&display=swap');
+
+  :root {
+    --bg:        #f5f0e8;
+    --surface:   #ffffff;
+    --surface2:  #faf7f2;
+    --border:    #e0d8cc;
+    --accent:    #c0392b;
+    --accent2:   #e74c3c;
+    --green:     #27ae60;
+    --orange:    #e67e22;
+    --blue:      #2980b9;
+    --text:      #1a1208;
+    --muted:     #7a6e62;
+    --code-bg:   #1e1a14;
+    --code-text: #e8d5b0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    min-height: 100vh;
+    padding: 48px 20px 100px;
+  }
+
+  /* subtle dot pattern */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: radial-gradient(circle, #c0392b18 1px, transparent 1px);
+    background-size: 28px 28px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap { max-width: 920px; margin: 0 auto; position: relative; z-index: 1; }
+
+  /* ── Header ── */
+  header { margin-bottom: 56px; }
+
+  .header-inner {
+    background: var(--accent);
+    border-radius: 16px;
+    padding: 48px 48px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header-inner::after {
+    content: '';
+    position: absolute;
+    right: -40px; top: -40px;
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.06);
+  }
+  .header-inner::before {
+    content: '';
+    position: absolute;
+    right: 60px; bottom: -60px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.04);
+  }
+
+  .tag {
+    display: inline-block;
+    background: rgba(255,255,255,.2);
+    color: #fff;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    padding: 5px 14px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  h1 {
+    font-size: clamp(26px, 4.5vw, 44px);
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.1;
+    margin-bottom: 12px;
+    position: relative; z-index: 1;
+  }
+  .subtitle { color: rgba(255,255,255,.75); font-size: 15px; font-weight: 300; position: relative; z-index: 1; }
+
+  /* ── Key difference banner ── */
+  .diff-banner {
+    background: #fff8f0;
+    border: 2px solid var(--orange);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 44px;
+    display: flex; gap: 16px; align-items: flex-start;
+  }
+  .diff-banner .icon { font-size: 22px; flex-shrink: 0; }
+  .diff-banner strong { color: var(--orange); font-size: 15px; display: block; margin-bottom: 8px; }
+  .diff-banner p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  /* ── Compare table ── */
+  .compare {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 16px; margin-bottom: 44px;
+  }
+  .compare-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 22px;
+  }
+  .compare-box.active { border-color: var(--accent); }
+  .compare-box h3 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 14px; color: var(--muted); }
+  .compare-box h3 span { color: var(--accent); }
+  .compare-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .compare-row:last-child { border-bottom: none; }
+  .compare-row .key { color: var(--muted); }
+  .compare-row .val { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--text); font-weight: 600; }
+  .compare-row .val.hl { color: var(--accent); }
+
+  /* ── Architecture ── */
+  .arch {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 44px;
+    display: flex; align-items: center; justify-content: center;
+    gap: 16px; flex-wrap: wrap;
+  }
+  .arch-node {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 22px; text-align: center; min-width: 150px;
+  }
+  .arch-node.target { border-color: var(--accent); background: #fff5f5; }
+  .arch-node .alabel { font-size: 10px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; }
+  .arch-node .aname  { font-size: 16px; font-weight: 700; }
+  .arch-node .asub   { font-size: 11px; font-family: 'IBM Plex Mono', monospace; color: var(--muted); margin-top: 3px; }
+  .arch-arrow { text-align: center; color: var(--accent); }
+  .arch-arrow .line  { width: 60px; height: 2px; background: var(--accent); position: relative; }
+  .arch-arrow .line::after { content: '▶'; position: absolute; right: -7px; top: -9px; font-size: 10px; }
+  .arch-arrow .albl  { font-size: 10px; font-family: 'IBM Plex Mono', monospace; margin-top: 5px; color: var(--accent); }
+
+  /* ── Steps ── */
+  .steps { display: flex; flex-direction: column; gap: 28px; }
+
+  .step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: box-shadow .2s, border-color .2s;
+  }
+  .step:hover { border-color: var(--accent); box-shadow: 0 4px 20px rgba(192,57,43,.1); }
+
+  .step-head {
+    display: flex; align-items: center; gap: 16px;
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+  .step-num {
+    width: 38px; height: 38px; border-radius: 8px;
+    background: var(--accent); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 14px;
+    flex-shrink: 0;
+  }
+  .step-title { font-size: 17px; font-weight: 700; }
+  .step-sub   { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  .step-body { padding: 22px 24px; }
+
+  /* ── Code blocks ── */
+  .code-wrap { position: relative; margin: 12px 0; }
+  pre {
+    background: var(--code-bg);
+    border-radius: 8px;
+    padding: 18px 20px;
+    overflow-x: auto;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    line-height: 1.75;
+    color: var(--code-text);
+  }
+  .c   { color: #6e6455; }
+  .kw  { color: #e8a87c; }
+  .st  { color: #a8d8a8; }
+  .nu  { color: #f7c59f; }
+  .cm  { color: #c0392b; font-weight: 600; }
+  .hl  { color: #ffd700; }
+
+  .copy-btn {
+    position: absolute; top: 10px; right: 10px;
+    background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15);
+    color: #a0998a; font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; padding: 4px 10px; border-radius: 4px;
+    cursor: pointer; transition: all .2s;
+  }
+  .copy-btn:hover { background: rgba(192,57,43,.3); color: #e8d5b0; }
+
+  /* ── Info boxes ── */
+  .info, .warn, .success, .tip {
+    border-radius: 8px; padding: 13px 16px;
+    font-size: 13px; margin: 12px 0;
+    display: flex; gap: 12px; align-items: flex-start; line-height: 1.6;
+  }
+  .info    { background: #f0f6ff; border-left: 3px solid var(--blue); color: #1a3a5c; }
+  .warn    { background: #fff8ee; border-left: 3px solid var(--orange); color: #6b3a00; }
+  .success { background: #f0faf5; border-left: 3px solid var(--green); color: #0f3d22; }
+  .tip     { background: #fef9f0; border-left: 3px solid #f39c12; color: #5a3a00; }
+  .ico     { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+  /* ── Tables ── */
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  th { background: var(--surface2); color: var(--muted); font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; text-align: left; padding: 9px 14px; border-bottom: 2px solid var(--border); }
+  td { padding: 9px 14px; border-bottom: 1px solid var(--border); }
+  tr:last-child td { border-bottom: none; }
+  td code { background: var(--surface2); padding: 2px 7px; border-radius: 4px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--accent); border: 1px solid var(--border); }
+
+  /* ── Flow steps ── */
+  .flow { display: flex; flex-direction: column; gap: 0; margin: 14px 0; }
+  .flow-item { display: flex; align-items: flex-start; gap: 14px; }
+  .flow-left { display: flex; flex-direction: column; align-items: center; }
+  .flow-dot {
+    width: 30px; height: 30px; border-radius: 6px;
+    background: var(--accent); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600;
+    flex-shrink: 0;
+  }
+  .flow-connector { width: 2px; height: 24px; background: var(--border); margin: 0 auto; }
+  .flow-content { padding: 4px 0 20px; }
+  .flow-content strong { font-size: 14px; font-weight: 700; color: var(--text); }
+  .flow-content p { font-size: 13px; color: var(--muted); margin-top: 3px; line-height: 1.5; }
+
+  /* ── Footer ── */
+  footer {
+    margin-top: 60px; text-align: center;
+    padding: 24px;
+    background: var(--surface);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    font-size: 13px; color: var(--muted);
+  }
+  footer strong { color: var(--accent); }
+
+  @media (max-width: 600px) {
+    .compare { grid-template-columns: 1fr; }
+    .header-inner { padding: 32px 24px; }
+    .step-head, .step-body { padding: 16px 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Header -->
+  <header>
+    <div class="header-inner">
+      <div class="tag">Step-by-Step Guide</div>
+      <h1>MySQL → Hostinger<br/>Full Table Replace Sync</h1>
+      <p class="subtitle">Sync 20 selected tables from your local MySQL to Hostinger Managed Database</p>
+    </div>
+  </header>
+
+  <!-- Key Difference banner -->
+  <div class="diff-banner">
+    <div class="icon">🔄</div>
+    <div>
+      <strong>Key Difference from DigitalOcean</strong>
+      <p>Hostinger uses standard port <strong>3306</strong> (not 25060). SSL is optional. Remote MySQL access must be manually enabled in <strong>hPanel → Databases → Remote MySQL</strong>. Your DB name and username are auto-prefixed with your account ID (e.g. <code>u123456789_dbname</code>).</p>
+    </div>
+  </div>
+
+  <!-- Compare DO vs Hostinger -->
+  <div class="compare">
+    <div class="compare-box">
+      <h3>DigitalOcean</h3>
+      <div class="compare-row"><span class="key">Port</span><span class="val">25060</span></div>
+      <div class="compare-row"><span class="key">SSL</span><span class="val">Required</span></div>
+      <div class="compare-row"><span class="key">IP Whitelist</span><span class="val">Trusted Sources</span></div>
+      <div class="compare-row"><span class="key">DB Prefix</span><span class="val">None</span></div>
+      <div class="compare-row"><span class="key">Remote Access</span><span class="val">Always on</span></div>
+    </div>
+    <div class="compare-box active">
+      <h3><span>Hostinger</span> ← You are here</h3>
+      <div class="compare-row"><span class="key">Port</span><span class="val hl">3306</span></div>
+      <div class="compare-row"><span class="key">SSL</span><span class="val hl">Optional</span></div>
+      <div class="compare-row"><span class="key">IP Whitelist</span><span class="val hl">Remote MySQL tab</span></div>
+      <div class="compare-row"><span class="key">DB Prefix</span><span class="val hl">u123456789_</span></div>
+      <div class="compare-row"><span class="key">Remote Access</span><span class="val hl">Must enable manually</span></div>
+    </div>
+  </div>
+
+  <!-- Architecture -->
+  <div class="arch">
+    <div class="arch-node">
+      <div class="alabel">Source</div>
+      <div class="aname">Local MySQL</div>
+      <div class="asub">100 tables · port 3306</div>
+    </div>
+    <div class="arch-arrow">
+      <div class="line"></div>
+      <div class="albl">TRUNCATE + INSERT</div>
+    </div>
+    <div class="arch-node target">
+      <div class="alabel">Target</div>
+      <div class="aname">Hostinger MySQL</div>
+      <div class="asub">20 synced tables · port 3306</div>
+    </div>
+  </div>
+
+  <!-- Steps -->
+  <div class="steps">
+
+    <!-- STEP 1 -->
+    <div class="step">
+      <div class="step-head">
+        <div class="step-num">01</div>
+        <div>
+          <div class="step-title">Log in to hPanel and Create a Database</div>
+          <div class="step-sub">Set up your MySQL database on Hostinger</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Go to <strong>hPanel → Hosting → Manage → Databases → MySQL Databases</strong></p>
+        <table>
+          <tr><th>Action</th><th>Where</th><th>Note</th></tr>
+          <tr><td>Create new DB</td><td>MySQL Databases → Create</td><td>Name gets auto-prefixed: <code>u123456789_yourname</code></td></tr>
+          <tr><td>Create DB user</td><td>MySQL Users → Create</td><td>Username also gets prefixed: <code>u123456789_user</code></td></tr>
+          <tr><td>Assign user to DB</td><td>Add User to DB section</td><td>Give <code>ALL PRIVILEGES</code></td></tr>
+        </table>
+        <div class="info">
+          <span class="ico">ℹ️</span>
+          <span>Note down the full auto-generated names — you'll need them exactly as shown (including the <strong>u123456789_</strong> prefix) in the script config.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step">
+      <div class="step-head">
+        <div class="step-num">02</div>
+        <div>
+          <div class="step-title">Enable Remote MySQL Access</div>
+          <div class="step-sub">This is the most important Hostinger-specific step</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Go to <strong>hPanel → Databases → Remote MySQL</strong> and add your local IP:</p>
+        <div class="code-wrap">
+          <pre><span class="c"># Step 1: Find your public IP</span>
+<span class="cm">curl</span> ifconfig.me
+
+<span class="c"># Step 2: Go to hPanel → Databases → Remote MySQL</span>
+<span class="c"># Click "Add IP Address" and enter your IP</span>
+<span class="c"># Example: 103.45.67.89</span>
+<span class="c"># Click Add</span></pre>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="warn">
+          <span class="ico">⚠️</span>
+          <span>Without this step, you'll get a <strong>"Host not allowed to connect"</strong> error. If your home internet has a dynamic IP, you must update this each time your IP changes.</span>
+        </div>
+        <div class="tip">
+          <span class="ico">💡</span>
+          <span>On Hostinger VPS plans, remote MySQL may need to be enabled via <strong>phpMyAdmin → User Accounts → Edit Privileges</strong> as well.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step">
+      <div class="step-head">
+        <div class="step-num">03</div>
+        <div>
+          <div class="step-title">Get Your Hostinger Connection Details</div>
+          <div class="step-sub">Collect credentials from hPanel</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Go to <strong>hPanel → Databases → MySQL Databases → Database Info</strong></p>
+        <table>
+          <tr><th>Field</th><th>Where to Find</th><th>Example Value</th></tr>
+          <tr><td>Hostname</td><td>DB Info / Connection tab</td><td><code>srv1234.hstgr.io</code></td></tr>
+          <tr><td>Port</td><td>Standard MySQL port</td><td><code>3306</code></td></tr>
+          <tr><td>Database name</td><td>MySQL Databases list</td><td><code>u123456789_mydb</code></td></tr>
+          <tr><td>Username</td><td>MySQL Users list</td><td><code>u123456789_user</code></td></tr>
+          <tr><td>Password</td><td>The one you set when creating user</td><td><code>your_db_password</code></td></tr>
+        </table>
+        <div class="info">
+          <span class="ico">ℹ️</span>
+          <span>The hostname is typically <strong>srv + number + .hstgr.io</strong>. You can also use your domain name as the hostname if DNS is pointed to Hostinger.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="step">
+      <div class="step-head">
+        <div class="step-num">04</div>
+        <div>
+          <div class="step-title">Install Python Dependency</div>
+          <div class="step-sub">Install the MySQL connector on your local machine</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <div class="code-wrap">
+          <pre><span class="c"># Install MySQL connector</span>
+<span class="cm">pip</span> install mysql-connector-python
+
+<span class="c"># Verify it works</span>
+<span class="cm">python3</span> -c <span class="st">"import mysql.connector; print('Ready ✓')"</span></pre>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="step">
+      <div class="step-head">
+        <div class="step-num">05</div>
+        <div>
+          <div class="step-title">Configure the Sync Script</div>
+          <div class="step-sub">Edit hostinger_sync.py with your actual credentials and table names</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <div class="code-wrap">
+          <pre><span class="c"># ── LOCAL DB ──────────────────────────────────────────────</span>
+LOCAL_DB = {
+    <span class="st">"host"</span>:     <span class="st">"localhost"</span>,
+    <span class="st">"port"</span>:     <span class="nu">3306</span>,
+    <span class="st">"user"</span>:     <span class="st">"root"</span>,
+    <span class="st">"password"</span>: <span class="st">"YOUR_LOCAL_PASSWORD"</span>,    <span class="c"># ← change</span>
+    <span class="st">"database"</span>: <span class="st">"YOUR_LOCAL_DB"</span>,          <span class="c"># ← change</span>
+}
+
+<span class="c"># ── HOSTINGER DB ──────────────────────────────────────────</span>
+HOSTINGER_DB = {
+    <span class="st">"host"</span>:     <span class="st">"srv1234.hstgr.io"</span>,          <span class="c"># ← from hPanel</span>
+    <span class="st">"port"</span>:     <span class="nu">3306</span>,                          <span class="c"># standard port</span>
+    <span class="st">"user"</span>:     <span class="st">"u123456789_user"</span>,            <span class="c"># ← from hPanel</span>
+    <span class="st">"password"</span>: <span class="st">"YOUR_HOSTINGER_DB_PASS"</span>,    <span class="c"># ← change</span>
+    <span class="st">"database"</span>: <span class="st">"u123456789_mydb"</span>,           <span class="c"># ← from hPanel</span>
+}
+
+<span class="c"># ── YOUR 20 TABLES ────────────────────────────────────────</span>
+TABLES_TO_SYNC = [
+    <span class="st">"orders"</span>,    <span class="st">"users"</span>,     <span class="st">"products"</span>,
+    <span class="st">"invoices"</span>,  <span class="st">"payments"</span>,  <span class="st">"customers"</span>,
+    <span class="c"># ... all 20 table names here</span>
+]</pre>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 6 -->
+    <div class="step">
+      <div class="step-head">
+        <div class="step-num">06</div>
+        <div>
+          <div class="step-title">Test the Connection</div>
+          <div class="step-sub">Verify both local and Hostinger connections before running sync</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <div class="code-wrap">
+          <pre><span class="c"># Test local MySQL</span>
+<span class="cm">mysql</span> -u root -p -e <span class="st">"SELECT 'Local OK';"</span>
+
+<span class="c"># Test Hostinger connection</span>
+<span class="cm">mysql</span> -h srv1234.hstgr.io \
+      -P 3306 \
+      -u u123456789_user \
+      -p \
+      u123456789_mydb \
+      -e <span class="st">"SELECT 'Hostinger OK';"</span></pre>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="success">
+          <span class="ico">✅</span>
+          <span>Both should return a result. If Hostinger fails with <strong>"Host not allowed"</strong> → go back to Step 2 and whitelist your IP in Remote MySQL.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 7 -->
+    <div class="step">
+      <div class="step-head">
+        <div class="step-num">07</div>
+        <div>
+          <div class="step-title">Run the Sync Script</div>
+          <div class="step-sub">Execute the full table replace — what happens per table</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <div class="flow">
+          <div class="flow-item">
+            <div class="flow-left"><div class="flow-dot">1</div><div class="flow-connector"></div></div>
+            <div class="flow-content"><strong>Auto-create table if missing</strong><p>Copies CREATE TABLE structure from local → Hostinger if needed</p></div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-left"><div class="flow-dot">2</div><div class="flow-connector"></div></div>
+            <div class="flow-content"><strong>Disable FK checks</strong><p>SET FOREIGN_KEY_CHECKS = 0 to allow clean truncate</p></div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-left"><div class="flow-dot">3</div><div class="flow-connector"></div></div>
+            <div class="flow-content"><strong>TRUNCATE the table</strong><p>Wipes all existing rows on Hostinger for this table</p></div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-left"><div class="flow-dot">4</div><div class="flow-connector"></div></div>
+            <div class="flow-content"><strong>Batch INSERT all rows</strong><p>Fetches 1000 rows at a time from local, inserts into Hostinger</p></div>
+          </div>
+          <div class="flow-item">
+            <div class="flow-left"><div class="flow-dot">5</div><div class="flow-connector"></div></div>
+            <div class="flow-content"><strong>Re-enable FK checks</strong><p>Restores integrity constraints after data is loaded</p></div>
+          </div>
+        </div>
+
+        <div class="code-wrap">
+          <pre><span class="c"># Run the sync</span>
+<span class="cm">python3</span> hostinger_sync.py
+
+<span class="c"># Expected output:</span>
+<span class="c"># 2026-05-01 10:00:01  INFO  ✓ Connected to Local MySQL</span>
+<span class="c"># 2026-05-01 10:00:02  INFO  ✓ Connected to Hostinger MySQL</span>
+<span class="c"># 2026-05-01 10:00:02  INFO  ── [1/20] orders ──</span>
+<span class="c"># 2026-05-01 10:00:02  INFO    [orders] Source rows: 12,450</span>
+<span class="c"># 2026-05-01 10:00:02  INFO    [orders] Truncated on Hostinger ✓</span>
+<span class="c"># 2026-05-01 10:00:03  INFO    [orders] Progress: 12,450/12,450 (100%)</span>
+<span class="c"># 2026-05-01 10:00:03  INFO    [orders] ✅ Complete — 12,450 rows in 1.3s</span></pre>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 8 -->
+    <div class="step">
+      <div class="step-head">
+        <div class="step-num">08</div>
+        <div>
+          <div class="step-title">Verify via phpMyAdmin</div>
+          <div class="step-sub">Confirm data arrived correctly on Hostinger</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Go to <strong>hPanel → Databases → phpMyAdmin</strong> and run:</p>
+        <div class="code-wrap">
+          <pre><span class="c">-- Check row counts for your synced tables</span>
+<span class="kw">SELECT</span> TABLE_NAME, TABLE_ROWS
+<span class="kw">FROM</span> information_schema.TABLES
+<span class="kw">WHERE</span> TABLE_SCHEMA = <span class="st">'u123456789_mydb'</span>
+<span class="kw">ORDER BY</span> TABLE_NAME;</pre>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <div class="info">
+          <span class="ico">ℹ️</span>
+          <span>The script also writes a <strong>hostinger_sync_report.json</strong> file locally with full timing, row counts, and status per table — useful for audit logs.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 9 -->
+    <div class="step">
+      <div class="step-head">
+        <div class="step-num">09</div>
+        <div>
+          <div class="step-title">Schedule Automatic Syncs</div>
+          <div class="step-sub">Automate with cron on Linux/Mac or Task Scheduler on Windows</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:10px;"><strong>Linux / Mac — cron:</strong></p>
+        <div class="code-wrap">
+          <pre><span class="cm">crontab</span> -e
+
+<span class="c"># Every day at 3 AM</span>
+<span class="hl">0 3 * * *</span>   /usr/bin/python3 /path/to/hostinger_sync.py >> /var/log/hostinger_sync.log 2>&1
+
+<span class="c"># Every 6 hours</span>
+<span class="hl">0 */6 * * *</span> /usr/bin/python3 /path/to/hostinger_sync.py >> /var/log/hostinger_sync.log 2>&1</pre>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <p style="font-size:13px;color:var(--muted);margin:14px 0 10px;"><strong>Windows — Task Scheduler:</strong></p>
+        <div class="code-wrap">
+          <pre><span class="c"># Run in PowerShell to create scheduled task</span>
+<span class="cm">schtasks</span> /create /tn "HostingerSync" /tr "python C:\path\to\hostinger_sync.py" /sc daily /st 03:00</pre>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 10 -->
+    <div class="step">
+      <div class="step-head">
+        <div class="step-num">10</div>
+        <div>
+          <div class="step-title">Troubleshooting Common Hostinger Errors</div>
+          <div class="step-sub">Quick fixes specific to Hostinger</div>
+        </div>
+      </div>
+      <div class="step-body">
+        <table>
+          <tr><th>Error Message</th><th>Cause</th><th>Fix</th></tr>
+          <tr><td>Host not allowed to connect</td><td>IP not whitelisted</td><td><code>hPanel → Remote MySQL → Add IP</code></td></tr>
+          <tr><td>Access denied for user</td><td>Wrong username/password</td><td><code>Check u123456789_ prefix in config</code></td></tr>
+          <tr><td>Unknown database</td><td>Wrong DB name</td><td><code>Copy exact name from hPanel DB list</code></td></tr>
+          <tr><td>Can't connect to server</td><td>Wrong hostname</td><td><code>Use srv1234.hstgr.io from hPanel</code></td></tr>
+          <tr><td>Timeout / slow inserts</td><td>Large table / slow plan</td><td><code>Lower BATCH_SIZE to 500</code></td></tr>
+          <tr><td>FK constraint error</td><td>Related tables</td><td><code>Script handles this automatically</code></td></tr>
+          <tr><td>Max connections exceeded</td><td>Shared hosting limit</td><td><code>Add time.sleep(1) between tables</code></td></tr>
+        </table>
+        <div class="tip">
+          <span class="ico">💡</span>
+          <span>Hostinger shared plans have connection limits. If you hit them, add <code>time.sleep(2)</code> in the script after each table sync to pace the load.</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /steps -->
+
+  <footer>
+    <p>Guide for <strong>MySQL → Hostinger</strong> Full Table Replace Sync &nbsp;·&nbsp; Script: <strong>hostinger_sync.py</strong> &nbsp;·&nbsp; Report: <strong>hostinger_sync_report.json</strong></p>
+  </footer>
+
+</div>
+
+<script>
+function copyCode(btn) {
+  const pre = btn.previousElementSibling;
+  navigator.clipboard.writeText(pre.innerText).then(() => {
+    btn.textContent = 'copied!';
+    setTimeout(() => btn.textContent = 'copy', 2000);
+  });
+}
+</script>
+</body>
+</html>

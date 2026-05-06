@@ -54,12 +54,12 @@ export default function RegisterPage() {
     if (!form.student_id.trim()) e.student_id = 'Student ID is required.';
     if (!form.name.trim()) e.name = 'Full name is required.';
     if (!form.course_name) e.course_name = 'Please select a course.';
-    if (!form.dob) e.dob = 'Date of birth is required.';
+    //if (!form.dob) e.dob = 'Date of birth is required.';
     if (!form.gender) e.gender = 'Please select a gender.';
-    if (form.phone && !/^\d{10}$/.test(form.phone))
-      e.phone = 'Enter a valid 10-digit phone number.';
-    if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
-      e.email = 'Enter a valid email address.';
+    // if (form.phone && !/^\d{10}$/.test(form.phone))
+    //   e.phone = 'Enter a valid 10-digit phone number.';
+    // if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
+    //   e.email = 'Enter a valid email address.';
     return e;
   }
 
@@ -80,8 +80,9 @@ export default function RegisterPage() {
     setLoading(true);
     setErrors({});
     try {
-      const dobFormatted = formatDob(form.dob);
-      const payload = { ...form, dob: dobFormatted };
+      // const dobFormatted = formatDob(form.dob);
+      // const payload = { ...form, dob: dobFormatted };
+      const payload = { ...form };
 
       const body = new FormData();
       Object.entries(payload).forEach(([key, value]) => {
@@ -89,8 +90,8 @@ export default function RegisterPage() {
       });
       if (photoFile) body.append('photo', photoFile);
 
-      const API_BASE = import.meta.env.VITE_API_URL || '/api';
-      const response = await fetch(`${API_BASE}/register`, {
+      const API_BASE = import.meta.env.VITE_API_URL || '';
+      const response = await fetch(`${API_BASE}/api/register`, {
         method: 'POST',
         body,
       });
@@ -280,7 +281,7 @@ export default function RegisterPage() {
               {errors.gender && <p className="rp-error">{errors.gender}</p>}
             </div>
 
-            {/* ── DOB ── */}
+            {/* ── DOB ──
             <div className="rp-field">
               <label htmlFor="dob" className="rp-label rp-label--caps">
                 Date of Birth <span className="rp-required">*</span>
@@ -298,7 +299,7 @@ export default function RegisterPage() {
                 />
               </div>
               {errors.dob && <p className="rp-error">{errors.dob}</p>}
-            </div>
+            </div> */}
 
             {/* ── Course ── */}
             <div className="rp-field">
@@ -323,7 +324,7 @@ export default function RegisterPage() {
               {errors.course_name && <p className="rp-error">{errors.course_name}</p>}
             </div>
 
-            {/* ── Phone ── */}
+            {/* ── Phone ──
             <div className="rp-field">
               <label htmlFor="phone" className="rp-label rp-label--caps">Phone Number</label>
               <div className="rp-input-wrap">
@@ -344,7 +345,7 @@ export default function RegisterPage() {
             </div>
 
             {/* ── Email ── */}
-            <div className="rp-field">
+            {/* <div className="rp-field">
               <label htmlFor="email" className="rp-label rp-label--caps">Email Address</label>
               <div className="rp-input-wrap">
                 <span className="rp-input-icon">✉️</span>
@@ -363,7 +364,7 @@ export default function RegisterPage() {
             </div>
 
             {/* ── Address ── */}
-            <div className="rp-field">
+            {/* <div className="rp-field">
               <label htmlFor="address" className="rp-label rp-label--caps">Address</label>
               <textarea
                 id="address"
@@ -374,7 +375,7 @@ export default function RegisterPage() {
                 onChange={handleChange}
                 rows={2}
               />
-            </div>
+            </div> */}
 
           </div>{/* /rp-form-card */}
 
@@ -410,7 +411,7 @@ export default function RegisterPage() {
 
       {/* Footer */}
       <footer className="rp-footer">
-        Laxan Education · 2025–26 · Designed by Shros
+        Laxan Education · 2025–26 · Designed by Sbros
       </footer>
     </div>
   );
