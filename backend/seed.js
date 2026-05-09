@@ -64,10 +64,18 @@ async function seed() {
   await connection.query(`
     CREATE TABLE IF NOT EXISTS syllabus_coverage (
       id INT AUTO_INCREMENT PRIMARY KEY,
-      student_id VARCHAR(50),
-      subject_name VARCHAR(100),
-      pct_completed INT,
-      color_code VARCHAR(50)
+      memberid VARCHAR(50),
+      math INT DEFAULT 0,
+      english INT DEFAULT 0,
+      reasoning INT DEFAULT 0,
+      polity INT DEFAULT 0,
+      geography INT DEFAULT 0,
+      history INT DEFAULT 0,
+      economy INT DEFAULT 0,
+      snt INT DEFAULT 0,
+      statics INT DEFAULT 0,
+      comp INT DEFAULT 0,
+      total_attendance INT DEFAULT 0
     );
   `);
 
@@ -124,16 +132,10 @@ async function seed() {
     );
   }
 
-  const subjects = [
-    ['Mathematics', 82, 'var(--gold)'], ['Reasoning', 75, 'var(--blue)'],
-    ['GS', 78, 'var(--purple)'], ['English', 90, 'var(--green)'], ['Computer', 88, 'var(--cyan)']
-  ];
-  for (let s of subjects) {
-    await connection.query(
-      `INSERT INTO syllabus_coverage (student_id, subject_name, pct_completed, color_code) VALUES (?, ?, ?, ?)`,
-      [studentId, s[0], s[1], s[2]]
-    );
-  }
+  await connection.query(
+    `INSERT INTO syllabus_coverage (memberid, math, english, reasoning, polity, geography, history, economy, snt, statics, comp, total_attendance) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [studentId, 82, 90, 75, 50, 60, 40, 30, 20, 10, 88, 100]
+  );
 
   const remarks = [
     "Great improvement in mathematics test scores.",

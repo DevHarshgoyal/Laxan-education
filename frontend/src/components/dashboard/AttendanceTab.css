@@ -1,6 +1,6 @@
 .section-title {
   font-size: 16px;
-  margin-top: 0;
+  margin-top: 10px;
   margin-bottom: 16px;
 }
 
@@ -36,7 +36,7 @@
 
 .monthly-chart {
   padding: 20px 0 10px 0;
-  border-top: 1px solid rgba(0,0,0,0.05);
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .chart-title {
@@ -92,4 +92,26 @@
 
 .date-number {
   font-size: 12px;
+}
+
+.custom-select-premium {
+  width: auto;
+  font-size: 0.9rem;
+  border-radius: 50px;
+  border: 1px solid var(--gold);
+  background-color: rgba(255, 248, 231, 0.8);
+  color: var(--dark);
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  padding: 0.4rem 2rem 0.4rem 1.2rem;
+  outline: none;
+  appearance: auto;
+  /* Ensure standard dropdown arrow if any OS overrides */
+}
+
+.custom-select-premium:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.3);
 }

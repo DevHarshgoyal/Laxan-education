@@ -19,9 +19,18 @@ const MarksTab = ({ studentId }) => {
     return 'var(--red)';
   };
 
-  const totalMarks = tests.reduce((sum, test) => sum + test.marks, 0);
-  const maxMarks = tests.reduce((sum, test) => sum + test.total, 0);
-  const avgPct = maxMarks > 0 ? Math.round((totalMarks / maxMarks) * 100) : 0;
+  const totalPercent = tests.reduce((sum, test) => sum + parseFloat(test.percent || 0), 2);
+  const avgPct = tests.length > 0 ? (totalPercent / tests.length) : 0;
+
+  const formatDate = (dateString) => {
+    try {
+      const d = new Date(dateString);
+      if (isNaN(d.getTime())) return dateString;
+      return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: '2-digit' });
+    } catch {
+      return dateString;
+    }
+  };
 
   return (
     <div className="tab-content fade-in">
@@ -32,29 +41,23 @@ const MarksTab = ({ studentId }) => {
             <thead>
               <tr>
                 <th className="text-muted fw-semibold">TEST DATE</th>
-                <th className="text-muted fw-semibold">MARKS</th>
-                <th className="text-muted fw-semibold">TOTAL</th>
-                <th className="text-muted fw-semibold">%</th>
+                <th className="text-muted fw-semibold text-end">%</th>
               </tr>
             </thead>
             <tbody>
               {tests.map((test, idx) => {
-                const pct = Math.round((test.marks / test.total) * 100);
+                const pct = parseFloat(test.percent || 0);
                 const color = getPercentageColor(pct);
                 return (
                   <tr key={idx}>
-                    <td className="fw-medium">{test.date}</td>
-                    <td className="fw-bold">{test.marks}</td>
-                    <td className="text-muted">{test.total}</td>
-                    <td className="fw-bold" style={{ color }}>{pct}%</td>
+                    <td className="fw-medium">{formatDate(test.date)}</td>
+                    <td className="fw-bold text-end" style={{ color }}>{pct}%</td>
                   </tr>
                 );
               })}
               <tr style={{ borderTop: '2px solid rgba(0,0,0,0.1)', backgroundColor: 'var(--cream)' }}>
                 <td className="fw-bold text-dark">Average</td>
-                <td className="fw-bold">{totalMarks}</td>
-                <td className="text-muted">{maxMarks}</td>
-                <td className="fw-bold" style={{ color: getPercentageColor(avgPct) }}>{avgPct}%</td>
+                <td className="fw-bold text-end" style={{ color: getPercentageColor(avgPct) }}>{avgPct}%</td>
               </tr>
             </tbody>
           </table>

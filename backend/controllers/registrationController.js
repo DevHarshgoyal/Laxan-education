@@ -45,12 +45,12 @@ async function uploadToS3(file) {
  */
 const registerStudent = async (req, res) => {
   // const { student_id, name, course_name, dob, phone, email, address, gender } = req.body;
-  const { student_id, name, course_name, gender } = req.body;
+  const { student_id, name, course_name, gender, doa, validity } = req.body;
 
-  if (!student_id || !name || !course_name || !gender) {
+  if (!student_id || !name || !course_name || !gender || !doa || !validity) {
     return res.status(400).json({
       success: false,
-      message: 'student_id, name, course_name, gender and dob are required fields.',
+      message: 'student_id, name, course_name, gender, validity and doa are required fields.',
     });
   }
 
@@ -84,7 +84,7 @@ const registerStudent = async (req, res) => {
     // ── Insert student row ──
     const [result] = await pool.query(
       queries.registerStudent,
-      [student_id.trim(), name.trim(), course_name.trim(), null, 0, photo_url, null, gender, profile_id]
+      [student_id.trim(), name.trim(), course_name.trim(), null, 0, photo_url, validity.trim(), gender, profile_id, doa.trim()]
     );
 
     // ── Seed a blank fees row ──
@@ -101,7 +101,8 @@ const registerStudent = async (req, res) => {
         student_id: student_id.trim(),
         name: name.trim(),
         course_name: course_name.trim(),
-        dob: null,
+        doa: doa.trim(),
+        validity: validity.trim(),
         gender: gender || null,
         phone: null,
         email: null,
