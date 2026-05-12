@@ -26,10 +26,10 @@ const getAttendanceMetrics = async (req, res) => {
 };
 
 const getFees = async (req, res) => {
-  const { student_id } = req.query;
-  if (!student_id) return res.status(400).json({ error: 'student_id is required' });
+  const { member_id } = req.query;
+  if (!member_id) return res.status(400).json({ error: 'member_id is required' });
   try {
-    const [rows] = await pool.query(queries.getFees, [student_id]);
+    const [rows] = await pool.query(queries.getFees, [member_id]);
     res.json(rows[0] || {});
   } catch (err) {
     console.error(err);
@@ -74,10 +74,10 @@ const getSyllabus = async (req, res) => {
 };
 
 const getRemarks = async (req, res) => {
-  const { student_id } = req.query;
-  if (!student_id) return res.status(400).json({ error: 'student_id is required' });
+  const { member_id } = req.query;
+  if (!member_id) return res.status(400).json({ error: 'member_id is required' });
   try {
-    const [rows] = await pool.query(queries.getRemarks, [student_id]);
+    const [rows] = await pool.query(queries.getRemarks, [member_id]);
     res.json(rows);
   } catch (err) {
     console.error(err);

@@ -33,7 +33,7 @@ const ProfileCard = ({ studentId }) => {
                 alt={profile.name}
                 className="avatar"
               />
-              <div className="verified-badge" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><BadgeCheck size={16} fill="white" color="#1a202c" /></div>
+              <div className="verified-badge"><BadgeCheck size={16} fill="white" color="#1a202c" /></div>
             </div>
             <div className="student-details d-flex flex-column justify-center">
               <h2 className="student-name fw-bold text-white">{profile.name}</h2>

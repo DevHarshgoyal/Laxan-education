@@ -88,10 +88,10 @@ const registerStudent = async (req, res) => {
     );
 
     // ── Seed a blank fees row ──
-    await pool.query(
-      queries.insertFees,
-      [student_id.trim(), 0, 0, 0, 0]
-    );
+    // await pool.query(
+    //   queries.insertFees,
+    //   [student_id.trim(), 0]
+    // );
 
     return res.status(201).json({
       success: true,

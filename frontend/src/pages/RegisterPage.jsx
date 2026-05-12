@@ -327,7 +327,7 @@ export default function RegisterPage() {
                   className={`rp-input rp-input--icon ${errors.validity ? 'rp-input--error' : ''}`}
                   value={form.validity}
                   onChange={handleChange}
-                  max={new Date().toISOString().split('T')[0]}
+                  min={new Date().toISOString().split('T')[0]}
                 />
               </div>
               {errors.validity && <p className="rp-error">{errors.validity}</p>}
@@ -446,7 +446,7 @@ export default function RegisterPage() {
 
       {/* Footer */}
       <footer className="rp-footer">
-        Laxan Education · 2025–26 · Designed by Sbros
+        Laxan Education · 2026–27 · Designed by Sbros
       </footer>
     </div>
   );

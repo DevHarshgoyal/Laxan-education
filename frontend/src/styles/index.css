@@ -83,3 +83,8 @@ body {
 
 /* Remove default App styling */
 #app { width: 100%; }
+
+.tab-content-container {
+  padding: 0 20px;
+  margin-top: 20px;
+}

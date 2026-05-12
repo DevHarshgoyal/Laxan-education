@@ -30,3 +30,8 @@
 .fee-amount {
   font-size: 18px;
 }
+
+.fee-progress-labels {
+  font-size: 12px;
+  margin-bottom: 8px;
+}

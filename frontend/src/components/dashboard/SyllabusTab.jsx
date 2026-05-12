@@ -1,6 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import './SyllabusTab.css';
 
+const ALL_SUBJECTS = [
+  { id: 'math', name: 'Mathematics', color: 'var(--gold)' },
+  { id: 'english', name: 'English', color: 'var(--green)' },
+  { id: 'reasoning', name: 'Reasoning', color: 'var(--blue)' },
+  { id: 'polity', name: 'Polity', color: 'var(--purple)' },
+  { id: 'geography', name: 'Geography', color: 'var(--cyan)' },
+  { id: 'history', name: 'History', color: 'var(--gold)' },
+  { id: 'economy', name: 'Economy', color: 'var(--green)' },
+  { id: 'snt', name: 'S&T', color: 'var(--blue)' },
+  { id: 'statics', name: 'Statics', color: 'var(--purple)' },
+  { id: 'comp', name: 'Computer', color: 'var(--cyan)' },
+];
+
 const SyllabusTab = ({ studentId }) => {
   const [subjects, setSubjects] = useState([]);
   const [totalAttendance, setTotalAttendance] = useState(0);
@@ -12,18 +25,17 @@ const SyllabusTab = ({ studentId }) => {
       .then(data => {
         if (!data || Object.keys(data).length === 0) return;
         setTotalAttendance(data.total_attendance || 0);
-        const transformedSubjects = [
-          { name: 'Mathematics', pct: data.math || 0, color: 'var(--gold)' },
-          { name: 'English', pct: data.english || 0, color: 'var(--green)' },
-          { name: 'Reasoning', pct: data.reasoning || 0, color: 'var(--blue)' },
-          { name: 'Polity', pct: data.polity || 0, color: 'var(--purple)' },
-          { name: 'Geography', pct: data.geography || 0, color: 'var(--cyan)' },
-          { name: 'History', pct: data.history || 0, color: 'var(--gold)' },
-          { name: 'Economy', pct: data.economy || 0, color: 'var(--green)' },
-          { name: 'S&T', pct: data.snt || 0, color: 'var(--blue)' },
-          { name: 'Statics', pct: data.statics || 0, color: 'var(--purple)' },
-          { name: 'Computer', pct: data.comp || 0, color: 'var(--cyan)' },
-        ];
+        
+        // Check if fetched DB keys match the subject array ids
+        const fetchedKeys = Object.keys(data);
+        const transformedSubjects = ALL_SUBJECTS
+          .filter(sub => fetchedKeys.includes(sub.id) && data[sub.id] !== null && data[sub.id] !== undefined)
+          .map(sub => ({
+            name: sub.name,
+            pct: data[sub.id] || 0,
+            color: sub.color
+          }));
+          
         setSubjects(transformedSubjects);
       })
       .catch(err => console.error("Error fetching syllabus:", err));
