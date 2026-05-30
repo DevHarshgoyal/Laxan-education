@@ -19,7 +19,7 @@ const MarksTab = ({ studentId }) => {
     return 'var(--red)';
   };
 
-  const totalPercent = tests.reduce((sum, test) => sum + parseFloat(test.percent || 0), 2);
+  const totalPercent = tests.reduce((sum, test) => sum + parseFloat(test.percent || 0), 0);
   const avgPct = tests.length > 0 ? (totalPercent / tests.length) : 0;
 
   const formatDate = (dateString) => {
