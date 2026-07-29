@@ -11,6 +11,7 @@ cd backend; cmd /c "npm init -y"; cmd /c "npm install express cors"
 cd backend; node server.js
 npm run dev
 Invoke-RestMethod -Uri "http://localhost:5000/api/profile"
+https://api.trackprofile.id/api/profile?student_id=LX-2025-0142
 
 
 cmd /c "npm install mysql2 dotenv"
@@ -19,11 +20,26 @@ node seed.js
 
 # View any student's dashboard by changing the ID in the URL:
 http://localhost:5173/profile/LX-2026-5927
-http://localhost:5173/profile/LX-2026-1234
+http://localhost:5173/profile/TEST-ID-001
+https://trackprofile.id/profile/LX-2025-0142
+
+
 
 # Register page (default):
-http://localhost:5173/
+http://localhost:5173/laxan/register
+https://trackprofile.id/laxan/register
 
+# Home page (default):
+http://localhost:5173/
+https://trackprofile.id/
+
+
+## Sync Database throgh CRON Job Tables Whatever Required
+103.70.145.74 : Local System IP
+Hostinger Rempte MySql IP : Our MySQL server hostname is: srv2203.hstgr.io or you can use this IP as your hostname: 82.25.121.184
+
+mysql -h srv2203.hstgr.io \ -P 3306 \ -u u192790832_sbros \ -p Sbros@India123 \ u192790832_laxandashboard \ -e "SELECT 'Hostinger OK';
+python3 hostinger_sync.py
 
 
 npm install @aws-sdk/client-s3 multer
@@ -142,3 +158,37 @@ I can suggest the **exact setup (API + code + architecture)** for your app.
 [2]: https://techyorker.com/8-best-free-cloud-storage-services-to-store-photos-video-and-files-in-2023/?utm_source=chatgpt.com "8 Best Free Cloud Storage Services To Store Photos, Video, and Files in 2023 - TechYorker"
 [3]: https://www.cloudwards.net/best-free-cloud-storage-for-photos/?utm_source=chatgpt.com "Best Free Cloud Storage for Photos in 2026"
 [4]: https://www.reddit.com/r/cloudstorage/comments/1spodn3/image_storage_options/?utm_source=chatgpt.com "Image storage options"
+
+
+
+##AWS
+arn:aws:s3:ap-southeast-2:026296208479:accesspoint/laxandashboard ---->>> arn AWS
+
+# AWS S3 — replace with real values before using photo upload
+AWS_ACCESS_KEY_ID=AKIAQMH3AJRP4VOPV7XB
+AWS_SECRET_ACCESS_KEY=xcJ2o/2RrL7rlTJouT3oQA4VgmMV8OqD4/BNYsLN
+AWS_REGION=ap-southeast-2
+AWS_S3_BUCKET=laxan-dashboard-photos-026296208479-ap-southeast-2-an
+
+
+
+
+## Multi Tenant and API's
+Summary of Changes:
+Dynamic Path Mount Update: Modified 
+
+server.js
+ to mount the multi-tenant routers on /inst/:institute/api instead of /api/inst/:institute/api.
+Verification Update: Updated the verification tests in 
+
+verifyMultiTenant.js
+ to call /inst/:institute/api/....
+Verification Testing: Ran the local verification tests again and verified that the dynamic database connection pool resolves perfectly for the /inst/:institute/api/... paths, with the word api appearing exactly once.
+Documentation: Updated the dynamic route prefix and setup instructions in the 
+walkthrough.md
+.
+For example, when building the frontend for a new institute like laxan_edu, you can build it with:
+
+env
+VITE_API_URL=https://api.yourdomain.com/inst/laxan_edu
+When the frontend appends /api/profile, the request will hit https://api.yourdomain.com/inst/laxan_edu/api/profile (containing api exactly once), which maps perfectly to the backend.
