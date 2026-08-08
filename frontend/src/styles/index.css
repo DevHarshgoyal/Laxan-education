@@ -81,6 +81,10 @@ body {
 .gap-3 { gap: 12px; }
 .gap-4 { gap: 16px; }
 
+.text-start { text-align: left !important; }
+.text-end { text-align: right !important; }
+.text-center { text-align: center !important; }
+
 /* Remove default App styling */
 #app { width: 100%; }
 

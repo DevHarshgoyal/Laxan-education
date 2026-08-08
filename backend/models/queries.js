@@ -4,7 +4,7 @@ module.exports = {
   getAttendance: 'SELECT day AS date, dayname AS day, status FROM attendance_days WHERE student_id = ?',
   getAttendanceByMonthYear: 'SELECT day AS date, dayname AS day, status FROM attendance_days WHERE memberid = ? AND month = ? AND year = ?',
   getAttendanceTrend: "SELECT month, COUNT(*) as total_days, SUM(CASE WHEN status = 'P' THEN 1 ELSE 0 END) as present_days FROM attendance_days WHERE memberid = ? AND year = ? GROUP BY month",
-  getMarks: 'SELECT test_date AS date, percent FROM test_marks WHERE memberid = ?',
+  getMarks: 'SELECT id, test_date AS date, percent, math_per, eng_per, reas_per, gs_per FROM test_marks WHERE memberid = ?',
   getSyllabus: 'SELECT math, english, reasoning, polity, geography, history, economy, snt, statics, comp FROM syllabus_coverage WHERE memberid = ?',
   getRemarks: 'SELECT remark_text AS text, rdate AS date FROM teacher_remark WHERE memberid = ?',
   getAttendanceMetrics: 'SELECT total_attendance, total_present, total_absent FROM syllabus_coverage WHERE memberid = ?',
