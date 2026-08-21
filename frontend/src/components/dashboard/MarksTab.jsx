@@ -21,7 +21,10 @@ const MarksTab = ({ studentId }) => {
     fetch(`${import.meta.env.VITE_API_URL}/api/marks?student_id=${studentId}`)
       .then(res => res.json())
       .then(data => {
-        setTests(data || []);
+        const sorted = Array.isArray(data) 
+          ? [...data].sort((a, b) => new Date(b.date) - new Date(a.date)) 
+          : [];
+        setTests(sorted);
       })
       .catch(err => console.error("Error fetching marks:", err));
   }, [studentId]);
