@@ -61,6 +61,11 @@
 
 .meta-info {
   font-size: 11px;
+
+  @media (max-width: 420px) {
+    justify-content: center;
+  }
+
 }
 
 .attendance-highlight {

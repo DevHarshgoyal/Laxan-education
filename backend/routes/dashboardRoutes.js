@@ -8,5 +8,7 @@ router.get('/attendance', dashboardController.getAttendance);
 router.get('/marks', dashboardController.getMarks);
 router.get('/syllabus', dashboardController.getSyllabus);
 router.get('/remarks', dashboardController.getRemarks);
+router.get('/attendance-metrics', dashboardController.getAttendanceMetrics);
+router.get('/attendance-trend', dashboardController.getAttendanceTrend);
 
 module.exports = router;

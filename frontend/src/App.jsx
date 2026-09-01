@@ -1,12 +1,16 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
+import HomePage from './pages/HomePage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 
 function App() {
   return (
     <Routes>
-      {/* Registration page at root */}
-      <Route path="/" element={<RegisterPage />} />
+      {/* Home page at root */}
+      <Route path="/" element={<HomePage />} />
+
+      {/* Registration page */}
+      <Route path="/laxan/register" element={<RegisterPage />} />
 
       {/* Dashboard — studentId comes directly from the URL */}
       <Route path="/profile/:studentId" element={<DashboardPage />} />

@@ -64,10 +64,18 @@ async function seed() {
   await connection.query(`
     CREATE TABLE IF NOT EXISTS syllabus_coverage (
       id INT AUTO_INCREMENT PRIMARY KEY,
-      student_id VARCHAR(50),
-      subject_name VARCHAR(100),
-      pct_completed INT,
-      color_code VARCHAR(50)
+      memberid VARCHAR(50),
+      math INT DEFAULT 0,
+      english INT DEFAULT 0,
+      reasoning INT DEFAULT 0,
+      polity INT DEFAULT 0,
+      geography INT DEFAULT 0,
+      history INT DEFAULT 0,
+      economy INT DEFAULT 0,
+      snt INT DEFAULT 0,
+      statics INT DEFAULT 0,
+      comp INT DEFAULT 0,
+      total_attendance INT DEFAULT 0
     );
   `);
 
@@ -114,26 +122,24 @@ async function seed() {
   }
 
   const tests = [
-    ['12 Dec 25', 185, 200], ['19 Dec 25', 160, 200], ['26 Dec 25', 145, 200],
-    ['02 Jan 26', 125, 200], ['09 Jan 26', 190, 200], ['16 Jan 26', 175, 200]
+    ['2026-05-24', 92.5, 95, 90, 88, 97],
+    ['2026-05-17', 80.0, 85, 75, 80, 80],
+    ['2026-05-10', 72.5, 70, 65, 80, 75],
+    ['2026-05-03', 62.5, 60, 55, 70, 65],
+    ['2026-04-26', 95.0, 98, 92, 94, 96],
+    ['2026-04-19', 87.5, 90, 84, 88, 88]
   ];
   for (let t of tests) {
     await connection.query(
-      `INSERT INTO test_marks (student_id, test_date, marks_obtained, total_marks) VALUES (?, ?, ?, ?)`,
-      [studentId, t[0], t[1], t[2]]
+      `INSERT INTO test_marks (memberid, student_id, test_date, percent, math_per, eng_per, reas_per, gs_per) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [studentId, studentId, t[0], t[1], t[2], t[3], t[4], t[5]]
     );
   }
 
-  const subjects = [
-    ['Mathematics', 82, 'var(--gold)'], ['Reasoning', 75, 'var(--blue)'],
-    ['GS', 78, 'var(--purple)'], ['English', 90, 'var(--green)'], ['Computer', 88, 'var(--cyan)']
-  ];
-  for (let s of subjects) {
-    await connection.query(
-      `INSERT INTO syllabus_coverage (student_id, subject_name, pct_completed, color_code) VALUES (?, ?, ?, ?)`,
-      [studentId, s[0], s[1], s[2]]
-    );
-  }
+  await connection.query(
+    `INSERT INTO syllabus_coverage (memberid, math, english, reasoning, polity, geography, history, economy, snt, statics, comp, total_attendance) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [studentId, 82, 90, 75, 50, 60, 40, 30, 20, 10, 88, 100]
+  );
 
   const remarks = [
     "Great improvement in mathematics test scores.",

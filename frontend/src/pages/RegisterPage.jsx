@@ -1,19 +1,25 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/layout/Header';
+import {
+  GraduationCap,
+  Camera,
+  IdCard,
+  User,
+  Users,
+  Calendar,
+  AlertTriangle,
+  Pin
+} from 'lucide-react';
 import './RegisterPage.css';
 
 const COURSES = [
-  'SSC Combo',
-  'SSC GK',
-  'SSC Maths',
-  'IBPS PO',
-  'IBPS Clerk',
-  'RRB NTPC',
-  'RRB Group D',
-  'UPSC CSE Foundation',
-  'State PSC',
-  'English Speaking',
+  'Combo',
+  'SPECIAL MATH',
+  'SSC STENO',
+  'REJOIN SPECIAL MATH',
+  'REJOIN COMBO',
+  'COMBO PRO',
 ];
 
 const initialForm = {
@@ -54,12 +60,13 @@ export default function RegisterPage() {
     if (!form.student_id.trim()) e.student_id = 'Student ID is required.';
     if (!form.name.trim()) e.name = 'Full name is required.';
     if (!form.course_name) e.course_name = 'Please select a course.';
-    if (!form.dob) e.dob = 'Date of birth is required.';
+    if (!form.doa) e.doa = 'Date of admission is required.';
+    if (!form.validity) e.validity = 'Date of admission is required.';
     if (!form.gender) e.gender = 'Please select a gender.';
-    if (form.phone && !/^\d{10}$/.test(form.phone))
-      e.phone = 'Enter a valid 10-digit phone number.';
-    if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
-      e.email = 'Enter a valid email address.';
+    // if (form.phone && !/^\d{10}$/.test(form.phone))
+    //   e.phone = 'Enter a valid 10-digit phone number.';
+    // if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
+    //   e.email = 'Enter a valid email address.';
     return e;
   }
 
@@ -80,8 +87,10 @@ export default function RegisterPage() {
     setLoading(true);
     setErrors({});
     try {
-      const dobFormatted = formatDob(form.dob);
-      const payload = { ...form, dob: dobFormatted };
+      const doaFormatted = formatDate(form.doa);
+      const validityFormated = formatDate(form.validity);
+      const payload = { ...form, doa: doaFormatted, validity: validityFormated };
+      //const payload = { ...form };
 
       const body = new FormData();
       Object.entries(payload).forEach(([key, value]) => {
@@ -89,8 +98,8 @@ export default function RegisterPage() {
       });
       if (photoFile) body.append('photo', photoFile);
 
-      const API_BASE = import.meta.env.VITE_API_URL || '/api';
-      const response = await fetch(`${API_BASE}/register`, {
+      const API_BASE = import.meta.env.VITE_API_URL || '';
+      const response = await fetch(`${API_BASE}/api/register`, {
         method: 'POST',
         body,
       });
@@ -113,7 +122,7 @@ export default function RegisterPage() {
   }
 
   // ── Helpers ──────────────────────────────────────────────
-  function formatDob(isoDate) {
+  function formatDate(isoDate) {
     if (!isoDate) return '';
     const d = new Date(isoDate);
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -127,7 +136,7 @@ export default function RegisterPage() {
         <Header />
         <div className="rp-page-body">
           <div className="rp-success-card">
-            <div className="rp-success-icon">🎓</div>
+            <div className="rp-success-icon"><GraduationCap size={48} color="#10b981" /></div>
             <h2 className="rp-success-title">Registration Successful!</h2>
             <p className="rp-success-msg">
               Welcome to Laxan Education, <strong>{success.name}</strong>.
@@ -144,8 +153,12 @@ export default function RegisterPage() {
                 <span className="rp-detail-val">{success.course_name}</span>
               </div>
               <div className="rp-detail-row">
-                <span className="rp-detail-label">Date of Birth</span>
-                <span className="rp-detail-val">{success.dob}</span>
+                <span className="rp-detail-label">Date of Admission</span>
+                <span className="rp-detail-val">{success.doa}</span>
+              </div>
+              <div className="rp-detail-row">
+                <span className="rp-detail-label">Valid Until</span>
+                <span className="rp-detail-val">{success.validity}</span>
               </div>
               <div className="rp-detail-row">
                 <span className="rp-detail-label">Gender</span>
@@ -154,7 +167,7 @@ export default function RegisterPage() {
             </div>
 
             <p className="rp-save-note">
-              📌 Save your Student ID — you'll need it to log in.
+              <Pin size={16} color="#eab308" style={{ display: 'inline', verticalAlign: 'text-bottom', marginRight: '4px' }} /> Save your Student ID — you'll need it to log in.
             </p>
             <button
               id="go-to-dashboard-btn"
@@ -201,7 +214,7 @@ export default function RegisterPage() {
                   <img src={photo} alt="Preview" className="rp-photo-preview" />
                 ) : (
                   <>
-                    <span className="rp-photo-icon">📷</span>
+                    <span className="rp-photo-icon"><Camera size={32} color="#3b82f6" /></span>
                     <span className="rp-photo-hint">Tap to Upload Photo</span>
                     <button type="button" className="rp-browse-btn">Browse…</button>
                   </>
@@ -222,7 +235,7 @@ export default function RegisterPage() {
                 Student ID <span className="rp-required">*</span>
               </label>
               <div className="rp-input-wrap">
-                <span className="rp-input-icon">🆔</span>
+                <span className="rp-input-icon"><IdCard size={20} color="#8b5cf6" /></span>
                 <input
                   id="student_id"
                   name="student_id"
@@ -242,7 +255,7 @@ export default function RegisterPage() {
                 Full Name <span className="rp-required">*</span>
               </label>
               <div className="rp-input-wrap">
-                <span className="rp-input-icon">👤</span>
+                <span className="rp-input-icon"><User size={20} color="#10b981" /></span>
                 <input
                   id="name"
                   name="name"
@@ -263,7 +276,7 @@ export default function RegisterPage() {
                 Gender <span className="rp-required">*</span>
               </label>
               <div className="rp-input-wrap">
-                <span className="rp-input-icon">⚥</span>
+                <span className="rp-input-icon"><Users size={20} color="#f59e0b" /></span>
                 <select
                   id="gender"
                   name="gender"
@@ -280,24 +293,44 @@ export default function RegisterPage() {
               {errors.gender && <p className="rp-error">{errors.gender}</p>}
             </div>
 
-            {/* ── DOB ── */}
+            {/* ── Admission Date ── */}
             <div className="rp-field">
-              <label htmlFor="dob" className="rp-label rp-label--caps">
-                Date of Birth <span className="rp-required">*</span>
+              <label htmlFor="admission_date" className="rp-label rp-label--caps">
+                Date of Admission <span className="rp-required">*</span>
               </label>
               <div className="rp-input-wrap">
-                <span className="rp-input-icon">📅</span>
+                <span className="rp-input-icon"><Calendar size={20} color="#ec4899" /></span>
                 <input
-                  id="dob"
-                  name="dob"
+                  id="doa"
+                  name="doa"
                   type="date"
-                  className={`rp-input rp-input--icon ${errors.dob ? 'rp-input--error' : ''}`}
-                  value={form.dob}
+                  className={`rp-input rp-input--icon ${errors.doa ? 'rp-input--error' : ''}`}
+                  value={form.doa}
                   onChange={handleChange}
                   max={new Date().toISOString().split('T')[0]}
                 />
               </div>
-              {errors.dob && <p className="rp-error">{errors.dob}</p>}
+              {errors.doa && <p className="rp-error">{errors.doa}</p>}
+            </div>
+
+            {/* ── Validity ── */}
+            <div className="rp-field">
+              <label htmlFor="validity" className="rp-label rp-label--caps">
+                Validity <span className="rp-required">*</span>
+              </label>
+              <div className="rp-input-wrap">
+                <span className="rp-input-icon"><Calendar size={20} color="#f43f5e" /></span>
+                <input
+                  id="validity"
+                  name="validity"
+                  type="date"
+                  className={`rp-input rp-input--icon ${errors.validity ? 'rp-input--error' : ''}`}
+                  value={form.validity}
+                  onChange={handleChange}
+                  min={new Date().toISOString().split('T')[0]}
+                />
+              </div>
+              {errors.validity && <p className="rp-error">{errors.validity}</p>}
             </div>
 
             {/* ── Course ── */}
@@ -306,7 +339,7 @@ export default function RegisterPage() {
                 Course <span className="rp-required">*</span>
               </label>
               <div className="rp-input-wrap">
-                <span className="rp-input-icon">🎓</span>
+                <span className="rp-input-icon"><GraduationCap size={20} color="#06b6d4" /></span>
                 <select
                   id="course_name"
                   name="course_name"
@@ -323,7 +356,7 @@ export default function RegisterPage() {
               {errors.course_name && <p className="rp-error">{errors.course_name}</p>}
             </div>
 
-            {/* ── Phone ── */}
+            {/* ── Phone ──
             <div className="rp-field">
               <label htmlFor="phone" className="rp-label rp-label--caps">Phone Number</label>
               <div className="rp-input-wrap">
@@ -344,7 +377,7 @@ export default function RegisterPage() {
             </div>
 
             {/* ── Email ── */}
-            <div className="rp-field">
+            {/* <div className="rp-field">
               <label htmlFor="email" className="rp-label rp-label--caps">Email Address</label>
               <div className="rp-input-wrap">
                 <span className="rp-input-icon">✉️</span>
@@ -363,7 +396,7 @@ export default function RegisterPage() {
             </div>
 
             {/* ── Address ── */}
-            <div className="rp-field">
+            {/* <div className="rp-field">
               <label htmlFor="address" className="rp-label rp-label--caps">Address</label>
               <textarea
                 id="address"
@@ -374,13 +407,16 @@ export default function RegisterPage() {
                 onChange={handleChange}
                 rows={2}
               />
-            </div>
+            </div> */}
 
           </div>{/* /rp-form-card */}
 
           {/* API Error */}
           {errors.api && (
-            <div className="rp-api-error">⚠️ {errors.api}</div>
+            <div className="rp-api-error">
+              <AlertTriangle size={20} color="#ef4444" style={{ display: 'inline', verticalAlign: 'text-bottom', marginRight: '8px' }} />
+              {errors.api}
+            </div>
           )}
 
           {/* Buttons */}
@@ -410,7 +446,7 @@ export default function RegisterPage() {
 
       {/* Footer */}
       <footer className="rp-footer">
-        Laxan Education · 2025–26 · Designed by Shros
+        Laxan Education · 2026–27 · Designed by Sbros
       </footer>
     </div>
   );

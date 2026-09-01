@@ -30,7 +30,7 @@ export default function DashboardPage() {
       <ProfileCard studentId={studentId} />
       <TabBar activeTab={activeTab} setActiveTab={setActiveTab} />
 
-      <div className="tab-content-container" style={{ padding: '0 20px', marginTop: '20px' }}>
+      <div className="tab-content-container">
         {renderTabContent()}
       </div>
 
