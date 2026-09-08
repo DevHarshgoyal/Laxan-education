@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BadgeCheck } from 'lucide-react';
+import { apiRequest } from '../../api/client';
+import { logger } from '../../utils/logger';
 import './ProfileCard.css';
 
 const ProfileCard = ({ studentId }) => {
@@ -10,16 +12,14 @@ const ProfileCard = ({ studentId }) => {
     if (!studentId) return;
 
     // Fetch profile data
-    fetch(`${import.meta.env.VITE_API_URL}/api/profile?student_id=${studentId}`)
-      .then(res => res.json())
+    apiRequest(`/api/profile?student_id=${studentId}`)
       .then(data => setProfile(data))
-      .catch(err => console.error("Error fetching profile:", err));
+      .catch(err => logger.debug('ProfileCard', `Profile unavailable for ${studentId}: ${err.message}`));
 
     // Fetch attendance metrics
-    fetch(`${import.meta.env.VITE_API_URL}/api/attendance-metrics?member_id=${studentId}`)
-      .then(res => res.json())
+    apiRequest(`/api/attendance-metrics?member_id=${studentId}`)
       .then(data => setAttendanceMetrics(data))
-      .catch(err => console.error("Error fetching attendance metrics:", err));
+      .catch(err => logger.debug('ProfileCard', `Metrics unavailable for ${studentId}: ${err.message}`));
   }, [studentId]);
 
   return (

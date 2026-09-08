@@ -3,6 +3,8 @@ import {
   ChevronDown, 
   ChevronRight 
 } from 'lucide-react';
+import { apiRequest } from '../../api/client';
+import { logger } from '../../utils/logger';
 import './MarksTab.css';
 
 const SUBJECT_CONFIG = [
@@ -18,15 +20,14 @@ const MarksTab = ({ studentId }) => {
 
   useEffect(() => {
     if (!studentId) return;
-    fetch(`${import.meta.env.VITE_API_URL}/api/marks?student_id=${studentId}`)
-      .then(res => res.json())
+    apiRequest(`/api/marks?student_id=${studentId}`)
       .then(data => {
         const sorted = Array.isArray(data) 
           ? [...data].sort((a, b) => new Date(b.date) - new Date(a.date)) 
           : [];
         setTests(sorted);
       })
-      .catch(err => console.error("Error fetching marks:", err));
+      .catch(err => logger.debug('MarksTab', `Marks data unavailable for ${studentId}: ${err.message}`));
   }, [studentId]);
 
   const toggleRow = (rowId) => {

@@ -4,6 +4,8 @@ const dashboardController = require('../controllers/dashboardController');
 
 router.get('/profile', dashboardController.getProfile);
 router.get('/fees', dashboardController.getFees);
+router.get('/payments', dashboardController.getPaymentHistory);
+router.get('/dues', dashboardController.getDues);
 router.get('/attendance', dashboardController.getAttendance);
 router.get('/marks', dashboardController.getMarks);
 router.get('/syllabus', dashboardController.getSyllabus);

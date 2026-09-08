@@ -41,16 +41,16 @@ export default function HomePage() {
             </form>
           </div>
 
-          {/* <div className="action-card card">
-            <h3 className="action-title fw-bold">New Admission</h3>
-            <p className="action-desc text-muted">Register a new student into the system.</p>
+          <div className="action-card card" style={{ borderLeftColor: 'var(--navy)' }}>
+            <h3 className="action-title fw-bold">Accounting & Finances</h3>
+            <p className="action-desc text-muted">View institutional fee collections, payment receipts, and dues schedule.</p>
             <button 
-              onClick={() => navigate('/laxan/register')} 
+              onClick={() => navigate('/laxan/account')} 
               className="btn-secondary"
             >
-              Register Student
+              Open Accounting Portal
             </button>
-          </div> */}
+          </div>
         </div>
       </div>
 

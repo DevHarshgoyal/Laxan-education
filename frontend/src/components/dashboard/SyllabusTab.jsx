@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { apiRequest } from '../../api/client';
+import { logger } from '../../utils/logger';
 import './SyllabusTab.css';
 
 const ALL_SUBJECTS = [
@@ -20,8 +22,7 @@ const SyllabusTab = ({ studentId }) => {
 
   useEffect(() => {
     if (!studentId) return;
-    fetch(`${import.meta.env.VITE_API_URL}/api/syllabus?member_id=${studentId}`)
-      .then(res => res.json())
+    apiRequest(`/api/syllabus?member_id=${studentId}`)
       .then(data => {
         if (!data || Object.keys(data).length === 0) return;
         setTotalAttendance(data.total_attendance || 0);
@@ -38,7 +39,7 @@ const SyllabusTab = ({ studentId }) => {
           
         setSubjects(transformedSubjects);
       })
-      .catch(err => console.error("Error fetching syllabus:", err));
+      .catch(err => logger.debug('SyllabusTab', `Syllabus unavailable for ${studentId}: ${err.message}`));
   }, [studentId]);
 
   return (

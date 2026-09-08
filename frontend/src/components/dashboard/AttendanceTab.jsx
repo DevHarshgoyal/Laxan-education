@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { apiRequest } from '../../api/client';
+import { logger } from '../../utils/logger';
 import './AttendanceTab.css';
 
 const AttendanceTab = ({ studentId }) => {
@@ -19,24 +21,19 @@ const AttendanceTab = ({ studentId }) => {
     if (!studentId) return;
 
     // Fetch calendar days
-    let url = `${import.meta.env.VITE_API_URL}/api/attendance?student_id=${studentId}&month=${selectedMonth}&year=${selectedYear}`;
-    
-    fetch(url)
-      .then(res => res.json())
+    apiRequest(`/api/attendance?student_id=${studentId}&month=${selectedMonth}&year=${selectedYear}`)
       .then(data => setCalendarDays(data.calendarDays || []))
-      .catch(err => console.error("Error fetching attendance:", err));
+      .catch(err => logger.debug('AttendanceTab', `Calendar days unavailable for ${studentId}: ${err.message}`));
 
     // Fetch overall attendance metrics
-    fetch(`${import.meta.env.VITE_API_URL}/api/attendance-metrics?member_id=${studentId}`)
-      .then(res => res.json())
+    apiRequest(`/api/attendance-metrics?member_id=${studentId}`)
       .then(data => setAttendanceMetrics(data))
-      .catch(err => console.error("Error fetching attendance metrics:", err));
+      .catch(err => logger.debug('AttendanceTab', `Metrics unavailable for ${studentId}: ${err.message}`));
 
     // Fetch monthly trend
-    fetch(`${import.meta.env.VITE_API_URL}/api/attendance-trend?student_id=${studentId}&year=${selectedYear}`)
-      .then(res => res.json())
+    apiRequest(`/api/attendance-trend?student_id=${studentId}&year=${selectedYear}`)
       .then(data => setMonthlyTrend(data || []))
-      .catch(err => console.error("Error fetching attendance trend:", err));
+      .catch(err => logger.debug('AttendanceTab', `Trend unavailable for ${studentId}: ${err.message}`));
   }, [studentId, selectedMonth, selectedYear]);
 
   const percentage = attendanceMetrics.total_attendance || 0;

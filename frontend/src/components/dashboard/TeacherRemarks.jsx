@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { apiRequest } from '../../api/client';
+import { logger } from '../../utils/logger';
 import './TeacherRemarks.css';
 
 const TeacherRemarks = ({ studentId }) => {
@@ -6,10 +8,9 @@ const TeacherRemarks = ({ studentId }) => {
 
   useEffect(() => {
     if (!studentId) return;
-    fetch(`${import.meta.env.VITE_API_URL}/api/remarks?member_id=${studentId}`)
-      .then(res => res.json())
-      .then(data => setRemarks(data))
-      .catch(err => console.error("Error fetching remarks:", err));
+    apiRequest(`/api/remarks?member_id=${studentId}`)
+      .then(data => setRemarks(data || []))
+      .catch(err => logger.debug('TeacherRemarks', `Remarks unavailable for ${studentId}: ${err.message}`));
   }, [studentId]);
 
   return (
