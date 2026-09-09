@@ -1,6 +1,6 @@
 import React from 'react';
 import { GraduationCap, Bell } from 'lucide-react';
-import './Header.css';
+import '../../styles/Header.css';
 
 const Header = () => {
   return (

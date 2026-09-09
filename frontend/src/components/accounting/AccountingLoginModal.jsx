@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { User, KeyRound, AlertCircle, ArrowRight, ShieldCheck } from 'lucide-react';
 import { logger } from '../../utils/logger';
-import './AccountingLoginModal.css';
+import '../../styles/AccountingLoginModal.css';
 
 const AccountingLoginModal = ({ onLoginSuccess, onCancel }) => {
   const [username, setUsername] = useState('');
@@ -57,32 +57,35 @@ const AccountingLoginModal = ({ onLoginSuccess, onCancel }) => {
   };
 
   return (
-    <div className="login-modal-overlay">
+    <div className="login-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="login-modal-title">
       <div className="login-modal-card card-navy fade-in">
         <div className="login-modal-header">
-          <div className="login-icon-badge">
+          <div className="login-icon-badge" aria-hidden="true">
             <ShieldCheck size={28} className="text-gold" />
           </div>
-          <h2 className="login-title text-white fw-bold">Accounting Portal</h2>
+          <h2 id="login-modal-title" className="login-title text-white fw-bold">Accounting Portal</h2>
           <p className="login-subtitle text-muted">
             Restricted access. Please authenticate to view institutional finances.
           </p>
         </div>
 
         {error && (
-          <div className="login-error-banner d-flex align-center gap-2">
-            <AlertCircle size={16} />
+          <div className="login-error-banner d-flex align-center gap-2" role="alert">
+            <AlertCircle size={16} aria-hidden="true" />
             <span>{error}</span>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="login-form">
           <div className="form-group">
-            <label className="form-label text-muted">Username or Email</label>
+            <label htmlFor="accounting-username" className="form-label text-muted">Username or Email</label>
             <div className="input-wrapper">
-              <User size={18} className="input-icon text-muted" />
+              <User size={18} className="input-icon text-muted" aria-hidden="true" />
               <input
+                id="accounting-username"
+                name="username"
                 type="text"
+                autoComplete="username"
                 placeholder="e.g. admin or accountant"
                 className="modal-input"
                 value={username}
@@ -93,11 +96,14 @@ const AccountingLoginModal = ({ onLoginSuccess, onCancel }) => {
           </div>
 
           <div className="form-group">
-            <label className="form-label text-muted">Password</label>
+            <label htmlFor="accounting-password" className="form-label text-muted">Password</label>
             <div className="input-wrapper">
-              <KeyRound size={18} className="input-icon text-muted" />
+              <KeyRound size={18} className="input-icon text-muted" aria-hidden="true" />
               <input
+                id="accounting-password"
+                name="password"
                 type="password"
+                autoComplete="current-password"
                 placeholder="Enter your password"
                 className="modal-input"
                 value={password}

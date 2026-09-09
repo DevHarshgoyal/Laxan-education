@@ -2,6 +2,35 @@
 // Shared formatting and utility functions for accounting tables and reports
 
 /**
+ * Formats a Date object to local YYYY-MM-DD format string
+ */
+export function formatLocalYMD(date = new Date()) {
+  const d = new Date(date);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const dayOfMonth = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${dayOfMonth}`;
+}
+
+/**
+ * Returns today's date in local YYYY-MM-DD format.
+ */
+export function getTodayDate(referenceDate = new Date()) {
+  return formatLocalYMD(referenceDate);
+}
+
+/**
+ * Returns current date range (both from and to set to current date) in local YYYY-MM-DD format.
+ */
+export function getTodayDateRange(referenceDate = new Date()) {
+  const today = formatLocalYMD(referenceDate);
+  return {
+    from: today,
+    to: today
+  };
+}
+
+/**
  * Calculates the current week date range (Monday to Sunday) in local YYYY-MM-DD format.
  */
 export function getCurrentWeekRange(referenceDate = new Date()) {
@@ -14,13 +43,6 @@ export function getCurrentWeekRange(referenceDate = new Date()) {
 
   const sunday = new Date(monday);
   sunday.setDate(monday.getDate() + 6);
-
-  const formatLocalYMD = (date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const dayOfMonth = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${dayOfMonth}`;
-  };
 
   return {
     from: formatLocalYMD(monday),

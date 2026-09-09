@@ -6,12 +6,12 @@ export default function ReportSummaryFooter({ activeReport, aggregates }) {
   if (!aggregates || aggregates.count === 0) return null;
 
   return (
-    <div className="report-summary-footer">
+    <footer className="report-summary-footer" aria-label="Financial Summary Highlights">
       {/* KPI Cards for Remaining Fees */}
       {activeReport === 'remaining-fees' && (
         <div className="kpi-cards-grid">
           <div className="kpi-card">
-            <div className="kpi-icon-badge red">
+            <div className="kpi-icon-badge red" aria-hidden="true">
               <Wallet size={20} />
             </div>
             <div className="kpi-content">
@@ -24,7 +24,7 @@ export default function ReportSummaryFooter({ activeReport, aggregates }) {
           </div>
 
           <div className="kpi-card">
-            <div className="kpi-icon-badge gold">
+            <div className="kpi-icon-badge gold" aria-hidden="true">
               <Users size={20} />
             </div>
             <div className="kpi-content">
@@ -40,7 +40,7 @@ export default function ReportSummaryFooter({ activeReport, aggregates }) {
       {activeReport === 'day-wise' && (
         <div className="kpi-cards-grid">
           <div className="kpi-card">
-            <div className="kpi-icon-badge green">
+            <div className="kpi-icon-badge green" aria-hidden="true">
               <Banknote size={20} />
             </div>
             <div className="kpi-content">
@@ -53,7 +53,7 @@ export default function ReportSummaryFooter({ activeReport, aggregates }) {
           </div>
 
           <div className="kpi-card">
-            <div className="kpi-icon-badge green">
+            <div className="kpi-icon-badge green" aria-hidden="true">
               <Receipt size={20} />
             </div>
             <div className="kpi-content">
@@ -68,7 +68,7 @@ export default function ReportSummaryFooter({ activeReport, aggregates }) {
           </div>
 
           <div className="kpi-card">
-            <div className="kpi-icon-badge blue">
+            <div className="kpi-icon-badge blue" aria-hidden="true">
               <CreditCard size={20} />
             </div>
             <div className="kpi-content">
@@ -88,7 +88,7 @@ export default function ReportSummaryFooter({ activeReport, aggregates }) {
       {activeReport === 'student-list' && (
         <div className="kpi-cards-grid">
           <div className="kpi-card">
-            <div className="kpi-icon-badge gold">
+            <div className="kpi-icon-badge gold" aria-hidden="true">
               <Users size={20} />
             </div>
             <div className="kpi-content">
@@ -99,7 +99,7 @@ export default function ReportSummaryFooter({ activeReport, aggregates }) {
           </div>
 
           <div className="kpi-card">
-            <div className="kpi-icon-badge blue">
+            <div className="kpi-icon-badge blue" aria-hidden="true">
               <BookOpen size={20} />
             </div>
             <div className="kpi-content">
@@ -110,6 +110,6 @@ export default function ReportSummaryFooter({ activeReport, aggregates }) {
           </div>
         </div>
       )}
-    </div>
+    </footer>
   );
 }

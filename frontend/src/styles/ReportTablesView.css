@@ -87,6 +87,217 @@
   color: var(--acc-navy-950);
 }
 
+/* ── Mobile Report Dropdown Selector (Hidden on Desktop) ── */
+.report-mobile-dropdown-container {
+  display: none;
+  position: relative;
+  width: 100%;
+}
+
+.report-dropdown-custom-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #0c172b 0%, #13223f 100%);
+  border: 1px solid rgba(201, 168, 76, 0.35);
+  border-radius: 14px;
+  padding: 11px 16px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  color: #ffffff;
+  text-align: left;
+}
+
+.report-dropdown-custom-card:hover {
+  border-color: var(--acc-gold-400);
+  background: linear-gradient(135deg, #101e38 0%, #172a4e 100%);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3), 0 0 12px rgba(201, 168, 76, 0.2);
+}
+
+.report-dropdown-custom-card.open {
+  border-color: var(--acc-gold-400);
+  box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.25), 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+.report-dropdown-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.report-dropdown-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(201, 168, 76, 0.15);
+  border: 1px solid rgba(201, 168, 76, 0.35);
+  color: var(--acc-gold-400);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.report-dropdown-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.report-dropdown-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--acc-gold-400);
+}
+
+.report-dropdown-selected-name {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.report-dropdown-chevron {
+  color: var(--acc-gold-400);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-left: 8px;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.report-dropdown-chevron.rotate {
+  transform: rotate(180deg);
+}
+
+/* ── Custom Floating Dropdown Menu ── */
+.report-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 1050;
+  background: linear-gradient(180deg, #0e1b33 0%, #081120 100%);
+  border: 1px solid rgba(201, 168, 76, 0.35);
+  border-radius: 16px;
+  padding: 6px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65), 0 0 24px rgba(201, 168, 76, 0.15);
+  backdrop-filter: blur(16px);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  animation: dropdownFade 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes dropdownFade {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.report-dropdown-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+}
+
+.report-dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.report-dropdown-item.active {
+  background: rgba(201, 168, 76, 0.12);
+  border-color: rgba(201, 168, 76, 0.35);
+}
+
+.dropdown-item-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.dropdown-item-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.report-dropdown-item.active .dropdown-item-icon {
+  background: rgba(201, 168, 76, 0.2);
+  border-color: rgba(201, 168, 76, 0.4);
+  color: var(--acc-gold-400);
+}
+
+.dropdown-item-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 2px;
+}
+
+.dropdown-item-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.report-dropdown-item.active .dropdown-item-title {
+  color: var(--acc-gold-400);
+}
+
+.dropdown-item-desc {
+  font-size: 11px;
+  color: #94a3b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdown-item-check {
+  color: var(--acc-gold-400);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+
 /* ──────────────────────────────────────────────────────────────────
    2. EXECUTIVE REPORT SHEET CARD & HEADER
    ────────────────────────────────────────────────────────────────── */
@@ -826,23 +1037,180 @@
 }
 
 @media (max-width: 768px) {
-  .report-selector-bar,
-  .report-pills-group,
-  .toolbar-primary-row,
-  .date-filters-form {
-    flex-direction: column;
-    align-items: stretch;
+  /* 1. Selector Bar: Hide desktop pills, show mobile dropdown */
+  .report-pills-group {
+    display: none !important;
   }
 
-  .modern-date-input,
+  .report-mobile-dropdown-container {
+    display: block !important;
+    width: 100%;
+  }
+
+  .report-selector-bar {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin-bottom: 12px;
+    width: 100%;
+    overflow: visible;
+  }
+
+  /* 2. Executive Report Sheet Card & Header Banner */
+  .report-sheet-card {
+    border-radius: 16px;
+  }
+  .report-header-banner {
+    padding: 14px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .header-banner-left {
+    gap: 10px;
+    width: 100%;
+  }
+  .report-icon-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    flex-shrink: 0;
+  }
+  .report-institution-name {
+    font-size: 10px;
+    letter-spacing: 0.8px;
+  }
+  .report-main-title {
+    font-size: 16px;
+  }
+  .header-banner-right {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .header-badge-chip {
+    padding: 4px 10px;
+    font-size: 11px;
+  }
+
+  /* 3. Date Filters & Live Search Toolbar */
+  .report-control-toolbar {
+    padding: 12px 14px;
+  }
+  .toolbar-primary-row {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .date-filters-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 8px;
+    width: 100%;
+  }
+  .filter-input-group {
+    min-width: 0;
+    width: 100%;
+  }
+  .filter-label-text {
+    font-size: 11px;
+    gap: 3px;
+  }
+  .date-input-wrapper {
+    width: 100%;
+  }
+  .modern-date-input {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 7px 8px;
+    font-size: 12px;
+    border-radius: 6px;
+  }
+  .filter-apply-btn {
+    grid-column: span 2;
+    width: 100%;
+    justify-content: center;
+    height: 38px;
+    font-size: 12.5px;
+    padding: 8px 14px;
+  }
   .live-search-box {
     width: 100%;
     min-width: 100%;
     max-width: 100%;
   }
+  .live-search-input {
+    font-size: 12.5px;
+    padding: 8px 32px 8px 34px;
+    box-sizing: border-box;
+  }
 
+  /* 4. Data Tables Responsive Horizontal Scroll */
+  .table-data-wrapper {
+    min-height: 240px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .modern-report-table {
+    min-width: 640px;
+  }
+  .modern-report-table thead th {
+    padding: 10px 10px;
+    font-size: 11px;
+    letter-spacing: 0.4px;
+  }
+  .modern-report-table tbody td {
+    padding: 10px 10px;
+    font-size: 12px;
+  }
+
+  /* 5. KPI Summary Footer */
+  .report-summary-footer {
+    padding: 12px 14px;
+  }
   .kpi-cards-grid {
     grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .kpi-card {
+    padding: 10px 12px;
+    gap: 10px;
+    border-radius: 10px;
+  }
+  .kpi-icon-badge {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+  }
+  .kpi-label {
+    font-size: 11px;
+  }
+  .kpi-value {
+    font-size: 17px;
+  }
+  .kpi-subtext {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .report-sheet-card {
+    border-radius: 12px;
+  }
+  .report-header-banner {
+    padding: 12px;
+  }
+  .report-main-title {
+    font-size: 15px;
+  }
+  .report-control-toolbar {
+    padding: 10px 12px;
+  }
+  .report-summary-footer {
+    padding: 10px 12px;
   }
 }
 

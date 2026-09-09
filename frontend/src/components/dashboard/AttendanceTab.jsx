@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { apiRequest } from '../../api/client';
 import { logger } from '../../utils/logger';
-import './AttendanceTab.css';
+import '../../styles/AttendanceTab.css';
 
 const AttendanceTab = ({ studentId }) => {
   const [calendarDays, setCalendarDays] = useState([]);

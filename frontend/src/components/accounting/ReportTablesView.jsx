@@ -1,17 +1,17 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { 
   Calendar, Search, RefreshCw, 
   AlertCircle, Wallet, Receipt, Users, 
-  X, Filter, Sparkles 
+  X, Filter, Sparkles, ChevronDown, Check
 } from 'lucide-react';
 import { apiRequest } from '../../api/client';
 import { logger } from '../../utils/logger';
-import { formatDisplayDate, getCurrentWeekRange } from '../../utils/accountingUtils';
+import { formatDisplayDate, getTodayDate } from '../../utils/accountingUtils';
 import RemainingFeesTable from './RemainingFeesTable';
 import DayWiseCollectionTable from './DayWiseCollectionTable';
 import StudentListTable from './StudentListTable';
 import ReportSummaryFooter from './ReportSummaryFooter';
-import './ReportTablesView.css';
+import '../../styles/ReportTablesView.css';
 
 // ── Report Registry Configuration ───────────────────────────────────
 const REPORT_CONFIGS = {
@@ -46,10 +46,10 @@ const NUMERIC_SORT_FIELDS = new Set(['remainFee', 'amount', 'finalFee', 'id']);
 export default function ReportTablesView() {
   const [activeReport, setActiveReport] = useState('remaining-fees');
   
-  // Date filter inputs — dynamically computed to current week
-  const currentWeek = useMemo(() => getCurrentWeekRange(), []);
-  const [fromDate, setFromDate] = useState(currentWeek.from);
-  const [toDate, setToDate] = useState(currentWeek.to);
+  // Date filter inputs — always defaulted to current date in both from and to
+  const initialToday = useMemo(() => getTodayDate(), []);
+  const [fromDate, setFromDate] = useState(initialToday);
+  const [toDate, setToDate] = useState(initialToday);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedRowId, setSelectedRowId] = useState(null);
 
@@ -60,6 +60,33 @@ export default function ReportTablesView() {
   const [loading, setLoading] = useState(false);
   const [reportData, setReportData] = useState(null);
   const [error, setError] = useState(null);
+
+  // Mobile custom dropdown open state & outside click handler
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setDropdownOpen(false);
+      }
+    };
+    if (dropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
+      document.addEventListener('keydown', handleKeyDown);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [dropdownOpen]);
 
   const activeConfig = REPORT_CONFIGS[activeReport] || REPORT_CONFIGS['remaining-fees'];
   const ActiveIcon = activeConfig.icon;
@@ -95,22 +122,20 @@ export default function ReportTablesView() {
     }
   }, [activeReport, fromDate, toDate]);
 
-  // Tab switch handler: dynamically sets to current week
+  // Tab switch handler: dynamically resets date filter to current date in both from and to
   const handleReportSwitch = (reportKey) => {
+    setDropdownOpen(false);
     if (reportKey === activeReport) return;
-    const week = getCurrentWeekRange();
+    const today = getTodayDate();
     setActiveReport(reportKey);
+    setReportData(null);
     setSelectedRowId(null);
     setSearchTerm('');
     setSortField(null);
-    setFromDate(week.from);
-    setToDate(week.to);
+    setFromDate(today);
+    setToDate(today);
+    setError(null);
   };
-
-  // Re-fetch whenever report tab changes
-  useEffect(() => {
-    fetchReport();
-  }, [activeReport]);
 
   const handleShowClick = (e) => {
     e.preventDefault();
@@ -195,31 +220,98 @@ export default function ReportTablesView() {
 
   return (
     <div className="report-tables-wrapper">
-      {/* ── 1. Report Navigation Tabs ── */}
+      {/* ── 1. Report Navigation (Tabs for Desktop / Dropdown for Mobile) ── */}
       <nav className="report-selector-bar" aria-label="Report Selector">
-        <div className="report-pills-group" role="tablist">
+        {/* Desktop / Tablet Pills */}
+        <div className="report-pills-group" role="tablist" aria-orientation="horizontal">
           {Object.values(REPORT_CONFIGS).map((config) => {
             const Icon = config.icon;
             const isActive = activeReport === config.id;
             return (
               <button 
                 key={config.id}
+                id={`report-tab-${config.id}`}
                 type="button"
                 role="tab"
                 aria-selected={isActive}
+                aria-controls={`report-panel-${config.id}`}
                 className={`report-selector-pill ${isActive ? 'active' : ''}`}
                 onClick={() => handleReportSwitch(config.id)}
               >
-                <Icon size={15} className="pill-icon" />
+                <Icon size={15} className="pill-icon" aria-hidden="true" />
                 <span>{config.shortTitle}</span>
               </button>
             );
           })}
         </div>
+
+        {/* Mobile Custom Dropdown Selector */}
+        <div className="report-mobile-dropdown-container" ref={dropdownRef}>
+          <button
+            type="button"
+            className={`report-dropdown-custom-card ${dropdownOpen ? 'open' : ''}`}
+            onClick={() => setDropdownOpen(prev => !prev)}
+            aria-haspopup="listbox"
+            aria-expanded={dropdownOpen}
+            aria-label="Select report view"
+          >
+            <div className="report-dropdown-left">
+              <span className="report-dropdown-icon-box" aria-hidden="true">
+                <ActiveIcon size={18} />
+              </span>
+              <div className="report-dropdown-info">
+                <span className="report-dropdown-label">Report View</span>
+                <span className="report-dropdown-selected-name">{activeConfig.shortTitle}</span>
+              </div>
+            </div>
+            <div className={`report-dropdown-chevron ${dropdownOpen ? 'rotate' : ''}`} aria-hidden="true">
+              <ChevronDown size={18} />
+            </div>
+          </button>
+
+          {dropdownOpen && (
+            <div className="report-dropdown-menu" role="listbox" aria-label="Available Reports">
+              {Object.values(REPORT_CONFIGS).map((config) => {
+                const ItemIcon = config.icon;
+                const isSelected = activeReport === config.id;
+                return (
+                  <button
+                    key={config.id}
+                    type="button"
+                    role="option"
+                    aria-selected={isSelected}
+                    className={`report-dropdown-item ${isSelected ? 'active' : ''}`}
+                    onClick={() => handleReportSwitch(config.id)}
+                  >
+                    <div className="dropdown-item-left">
+                      <span className="dropdown-item-icon" aria-hidden="true">
+                        <ItemIcon size={16} />
+                      </span>
+                      <div className="dropdown-item-text">
+                        <span className="dropdown-item-title">{config.shortTitle}</span>
+                        <span className="dropdown-item-desc">{config.title}</span>
+                      </div>
+                    </div>
+                    {isSelected && (
+                      <span className="dropdown-item-check" aria-hidden="true">
+                        <Check size={16} />
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </nav>
 
       {/* ── 2. Master Institutional Report Card ── */}
-      <section className="report-sheet-card">
+      <section 
+        className="report-sheet-card"
+        role="tabpanel"
+        id={`report-panel-${activeReport}`}
+        aria-labelledby={`report-tab-${activeReport}`}
+      >
         {/* Header Banner */}
         <header className="report-header-banner">
           <div className="header-banner-left">
@@ -234,13 +326,19 @@ export default function ReportTablesView() {
 
           <div className="header-banner-right">
             <div className="header-badge-chip">
-              <Calendar size={13} />
-              <span>{fromDate ? formatDisplayDate(fromDate) : 'Start'} to {toDate ? formatDisplayDate(toDate) : 'Present'}</span>
+              <Calendar size={13} aria-hidden="true" />
+              <span>
+                {fromDate && toDate && fromDate === toDate
+                  ? formatDisplayDate(fromDate)
+                  : `${fromDate ? formatDisplayDate(fromDate) : 'Start'} to ${toDate ? formatDisplayDate(toDate) : 'Present'}`}
+              </span>
             </div>
-            <div className="header-badge-chip gold">
-              <Sparkles size={13} />
-              <span>{processedData.length} Records</span>
-            </div>
+            {reportData && (
+              <div className="header-badge-chip gold">
+                <Sparkles size={13} aria-hidden="true" />
+                <span>{processedData.length} Records</span>
+              </div>
+            )}
           </div>
         </header>
 
@@ -250,7 +348,7 @@ export default function ReportTablesView() {
             <form onSubmit={handleShowClick} className="date-filters-form">
               <div className="filter-input-group">
                 <label htmlFor="report-from-date" className="filter-label-text">
-                  <Calendar size={12} />
+                  <Calendar size={12} aria-hidden="true" />
                   <span>From Date</span>
                 </label>
                 <div className="date-input-wrapper">
@@ -266,7 +364,7 @@ export default function ReportTablesView() {
 
               <div className="filter-input-group">
                 <label htmlFor="report-to-date" className="filter-label-text">
-                  <Calendar size={12} />
+                  <Calendar size={12} aria-hidden="true" />
                   <span>To Date</span>
                 </label>
                 <div className="date-input-wrapper">
@@ -281,7 +379,7 @@ export default function ReportTablesView() {
               </div>
 
               <button type="submit" className="filter-apply-btn" disabled={loading}>
-                {loading ? <RefreshCw size={14} className="spin" /> : <Filter size={14} />}
+                {loading ? <RefreshCw size={14} className="spin" aria-hidden="true" /> : <Filter size={14} aria-hidden="true" />}
                 <span>{loading ? 'Filtering...' : 'Apply Date Filter'}</span>
               </button>
             </form>
@@ -303,9 +401,9 @@ export default function ReportTablesView() {
                   className="search-clear-btn" 
                   onClick={() => setSearchTerm('')}
                   title="Clear search"
-                  aria-label="Clear search"
+                  aria-label="Clear search keyword"
                 >
-                  <X size={14} />
+                  <X size={14} aria-hidden="true" />
                 </button>
               )}
             </div>
@@ -315,24 +413,34 @@ export default function ReportTablesView() {
         {/* ── 3. Modular High-Performance Data Table ── */}
         <div className="table-data-wrapper">
           {error ? (
-            <div className="error-table-state" role="alert">
-              <AlertCircle size={32} color="#ef4444" />
+            <div className="error-table-state" role="alert" aria-live="assertive">
+              <AlertCircle size={32} color="#ef4444" aria-hidden="true" />
               <h4 className="empty-state-title text-danger">Unable to load report</h4>
               <p className="empty-state-desc">{error}</p>
               <button type="button" onClick={() => fetchReport()} className="filter-apply-btn mt-2">
-                <RefreshCw size={14} />
+                <RefreshCw size={14} aria-hidden="true" />
                 <span>Retry Fetch</span>
               </button>
             </div>
           ) : loading ? (
-            <div className="loading-table-state" role="status">
-              <div className="loading-spinner-ring" />
+            <div className="loading-table-state" role="status" aria-live="polite">
+              <div className="loading-spinner-ring" aria-hidden="true" />
               <h4 className="empty-state-title">Retrieving Financial Ledger...</h4>
               <p className="empty-state-desc">Compiling institutional records and balances</p>
             </div>
+          ) : !reportData ? (
+            <div className="empty-table-state">
+              <div className="empty-state-icon" aria-hidden="true">
+                <Filter size={24} />
+              </div>
+              <h4 className="empty-state-title">Apply Filter to View Report</h4>
+              <p className="empty-state-desc">
+                Select your date range above and click &quot;Apply Date Filter&quot; to load records.
+              </p>
+            </div>
           ) : processedData.length === 0 ? (
             <div className="empty-table-state">
-              <div className="empty-state-icon">
+              <div className="empty-state-icon" aria-hidden="true">
                 <Search size={24} />
               </div>
               <h4 className="empty-state-title">No Records Found</h4>

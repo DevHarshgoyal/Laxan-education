@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
-import './HomePage.css';
+import '../styles/HomePage.css';
 
 export default function HomePage() {
   const navigate = useNavigate();

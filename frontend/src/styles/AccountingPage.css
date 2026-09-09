@@ -4,6 +4,7 @@ body.accounting-active #root,
   max-width: 100% !important;
   box-shadow: none !important;
   background-color: var(--cream);
+  overflow-x: clip !important;
 }
 
 /* ── Accounting Page Layout ── */
@@ -13,6 +14,7 @@ body.accounting-active #root,
   background-color: var(--cream);
   color: var(--text-dark);
   padding-bottom: 40px;
+  overflow-x: hidden;
 }
 
 /* ── Top Bar ── */
@@ -25,6 +27,7 @@ body.accounting-active #root,
   z-index: 100;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   width: 100%;
+  box-sizing: border-box;
 }
 
 .topbar-inner {
@@ -34,6 +37,7 @@ body.accounting-active #root,
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-sizing: border-box;
 }
 
 .topbar-text-group {
@@ -67,6 +71,7 @@ body.accounting-active #root,
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
 .topbar-back-btn:hover {
@@ -89,6 +94,7 @@ body.accounting-active #root,
   align-items: center;
   justify-content: center;
   border: 1px solid rgba(201, 168, 76, 0.3);
+  flex-shrink: 0;
 }
 
 .topbar-heading {
@@ -103,6 +109,7 @@ body.accounting-active #root,
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-shrink: 0;
 }
 
 .user-profile-badge {
@@ -122,6 +129,7 @@ body.accounting-active #root,
   height: 7px;
   border-radius: 50%;
   background: var(--green);
+  flex-shrink: 0;
 }
 
 .user-name {
@@ -146,6 +154,7 @@ body.accounting-active #root,
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
 .topbar-logout-btn:hover {
@@ -158,13 +167,96 @@ body.accounting-active #root,
   margin: 0 auto;
   padding: 24px 16px;
   width: 100%;
+  box-sizing: border-box;
 }
 
+/* ── Responsive Mobile & Tablet Breakpoints ── */
 @media (max-width: 768px) {
-  .topbar-inner {
-    padding: 0 4px;
+  .accounting-topbar {
+    padding: 10px 14px;
   }
+
+  .topbar-inner {
+    padding: 0;
+    gap: 8px;
+  }
+
+  .topbar-left {
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .topbar-title-group {
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .topbar-subheading {
+    display: none;
+  }
+
+  .topbar-heading {
+    font-size: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .topbar-right {
+    gap: 8px;
+  }
+
+  .user-role {
+    display: none;
+  }
+
   .logout-text {
     display: none;
+  }
+
+  .topbar-logout-btn {
+    padding: 6px 8px;
+  }
+
+  .accounting-main-container {
+    padding: 14px 10px;
+  }
+}
+
+@media (max-width: 600px) {
+  .topbar-badge-icon {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .accounting-topbar {
+    padding: 8px 10px;
+  }
+
+  .topbar-back-btn {
+    padding: 5px 8px;
+    font-size: 12px;
+    gap: 4px;
+  }
+
+  .topbar-heading {
+    font-size: 14px;
+  }
+
+  .user-profile-badge {
+    padding: 4px 8px;
+    font-size: 11px;
+    max-width: 105px;
+  }
+
+  .user-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .accounting-main-container {
+    padding: 10px 6px;
   }
 }

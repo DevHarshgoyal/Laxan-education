@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, LogOut, Wallet } from 'lucide-react';
 import AccountingLoginModal from '../components/accounting/AccountingLoginModal';
 import ReportTablesView from '../components/accounting/ReportTablesView';
-import './AccountingPage.css';
+import '../styles/AccountingPage.css';
 
 export default function AccountingPage() {
   const navigate = useNavigate();

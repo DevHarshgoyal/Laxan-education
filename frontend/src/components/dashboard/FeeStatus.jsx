@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { apiRequest } from '../../api/client';
 import { logger } from '../../utils/logger';
-import './FeeStatus.css';
+import '../../styles/FeeStatus.css';
 
 const FeeStatus = ({ studentId }) => {
   const [feeData, setFeeData] = useState({ pctPaid: 0 });

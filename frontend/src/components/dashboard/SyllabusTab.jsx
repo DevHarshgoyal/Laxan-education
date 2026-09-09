@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { apiRequest } from '../../api/client';
 import { logger } from '../../utils/logger';
-import './SyllabusTab.css';
+import '../../styles/SyllabusTab.css';
 
 const ALL_SUBJECTS = [
   { id: 'math', name: 'Mathematics', color: 'var(--gold)' },

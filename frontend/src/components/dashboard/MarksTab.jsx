@@ -5,7 +5,7 @@ import {
 } from 'lucide-react';
 import { apiRequest } from '../../api/client';
 import { logger } from '../../utils/logger';
-import './MarksTab.css';
+import '../../styles/MarksTab.css';
 
 const SUBJECT_CONFIG = [
   { key: 'math_per', name: 'Mathematics', short: 'Math', color: '#3b82f6' },

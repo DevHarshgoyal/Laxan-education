@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { apiRequest } from '../../api/client';
 import { logger } from '../../utils/logger';
-import './TeacherRemarks.css';
+import '../../styles/TeacherRemarks.css';
 
 const TeacherRemarks = ({ studentId }) => {
   const [remarks, setRemarks] = useState([]);

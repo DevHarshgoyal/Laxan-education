@@ -144,6 +144,7 @@
 
 .hint-buttons {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   margin-top: 6px;
 }
@@ -223,4 +224,35 @@
 @keyframes fadeIn {
   from { opacity: 0; transform: scale(0.98); }
   to { opacity: 1; transform: scale(1); }
+}
+
+@media (max-width: 480px) {
+  .login-modal-overlay {
+    padding: 12px;
+  }
+
+  .login-modal-card {
+    padding: 22px 18px;
+    border-radius: 16px;
+  }
+
+  .login-icon-badge {
+    width: 46px;
+    height: 46px;
+    margin-bottom: 12px;
+  }
+
+  .login-title {
+    font-size: 19px;
+  }
+
+  .login-subtitle {
+    font-size: 12px;
+  }
+
+  .modal-cancel-btn,
+  .modal-submit-btn {
+    padding: 10px;
+    font-size: 12.5px;
+  }
 }

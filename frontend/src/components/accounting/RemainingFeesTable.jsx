@@ -1,6 +1,6 @@
 import React from 'react';
-import { Users, BookOpen, Wallet, Calendar, Clock } from 'lucide-react';
-import { formatCurrency, formatDisplayDate, isDateOverdue, getCourseBadgeClass } from '../../utils/accountingUtils';
+import { Users, BookOpen, Wallet, Calendar } from 'lucide-react';
+import { formatCurrency, formatDisplayDate, getCourseBadgeClass } from '../../utils/accountingUtils';
 import SortIndicator from './SortIndicator';
 
 export default function RemainingFeesTable({
@@ -11,49 +11,91 @@ export default function RemainingFeesTable({
   sortDirection,
   onSort
 }) {
+  const handleKeyDownRow = (e, id) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onSelectRow(id);
+    }
+  };
+
+  const handleKeyDownHeader = (e, field) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onSort(field);
+    }
+  };
+
   return (
-    <table className="modern-report-table">
+    <table className="modern-report-table" aria-label="Remaining Fee Outstanding Report">
       <thead>
         <tr>
-          <th style={{ width: '60px' }}>
+          <th scope="col" style={{ width: '60px' }}>
             <span className="th-content">#</span>
           </th>
-          <th className="sortable" onClick={() => onSort('name')}>
+          <th 
+            scope="col"
+            className="sortable" 
+            onClick={() => onSort('name')}
+            onKeyDown={(e) => handleKeyDownHeader(e, 'name')}
+            tabIndex={0}
+            role="columnheader"
+            aria-sort={sortField === 'name' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
+          >
             <span className="th-content">
-              <Users size={13} />
+              <Users size={13} aria-hidden="true" />
               <span>Student Details</span>
               <SortIndicator currentField="name" activeField={sortField} direction={sortDirection} />
             </span>
           </th>
-          <th className="sortable" onClick={() => onSort('course')}>
+          <th 
+            scope="col"
+            className="sortable" 
+            onClick={() => onSort('course')}
+            onKeyDown={(e) => handleKeyDownHeader(e, 'course')}
+            tabIndex={0}
+            role="columnheader"
+            aria-sort={sortField === 'course' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
+          >
             <span className="th-content">
-              <BookOpen size={13} />
+              <BookOpen size={13} aria-hidden="true" />
               <span>Course</span>
               <SortIndicator currentField="course" activeField={sortField} direction={sortDirection} />
             </span>
           </th>
-          <th className="sortable" onClick={() => onSort('remainFee')}>
+          <th 
+            scope="col"
+            className="sortable" 
+            onClick={() => onSort('remainFee')}
+            onKeyDown={(e) => handleKeyDownHeader(e, 'remainFee')}
+            tabIndex={0}
+            role="columnheader"
+            aria-sort={sortField === 'remainFee' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
+          >
             <span className="th-content right">
-              <Wallet size={13} />
+              <Wallet size={13} aria-hidden="true" />
               <span>Remaining Fee</span>
               <SortIndicator currentField="remainFee" activeField={sortField} direction={sortDirection} />
             </span>
           </th>
-          <th className="sortable" onClick={() => onSort('nextDueDate')}>
+          <th 
+            scope="col"
+            className="sortable" 
+            onClick={() => onSort('nextDueDate')}
+            onKeyDown={(e) => handleKeyDownHeader(e, 'nextDueDate')}
+            tabIndex={0}
+            role="columnheader"
+            aria-sort={sortField === 'nextDueDate' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
+          >
             <span className="th-content">
-              <Calendar size={13} />
+              <Calendar size={13} aria-hidden="true" />
               <span>Next Due Date</span>
               <SortIndicator currentField="nextDueDate" activeField={sortField} direction={sortDirection} />
             </span>
-          </th>
-          <th style={{ width: '110px' }}>
-            <span className="th-content">Status</span>
           </th>
         </tr>
       </thead>
       <tbody>
         {data.map((row, idx) => {
-          const overdue = isDateOverdue(row.nextDueDate);
           const courseName = row.course ? row.course.toUpperCase() : 'COMBO';
           const courseClass = getCourseBadgeClass(courseName);
 
@@ -62,6 +104,10 @@ export default function RemainingFeesTable({
               key={row.id || idx} 
               className={selectedRowId === row.id ? 'row-selected' : ''}
               onClick={() => onSelectRow(row.id)}
+              onKeyDown={(e) => handleKeyDownRow(e, row.id)}
+              tabIndex={0}
+              role="row"
+              aria-selected={selectedRowId === row.id}
             >
               <td>
                 <span className="cell-index-badge">
@@ -86,22 +132,11 @@ export default function RemainingFeesTable({
               </td>
               <td>
                 <div className="due-date-cell-flex">
-                  <Calendar size={14} color="#64748b" />
+                  <Calendar size={14} color="#64748b" aria-hidden="true" />
                   <span className="date-text-primary">
                     {formatDisplayDate(row.nextDueDate)}
                   </span>
-                  {overdue ? (
-                    <span className="status-tag-overdue">Overdue</span>
-                  ) : (
-                    <span className="status-tag-ok">Upcoming</span>
-                  )}
                 </div>
-              </td>
-              <td>
-                <span className="status-tag-overdue" style={{ background: '#fff1f2', color: '#e11d48', borderColor: '#ffe4e6' }}>
-                  <Clock size={11} />
-                  <span>Pending</span>
-                </span>
               </td>
             </tr>
           );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, Users, BookOpen, CheckCircle2 } from 'lucide-react';
+import { Calendar, Users, BookOpen } from 'lucide-react';
 import { formatCurrency, formatDisplayDate, getCourseBadgeClass } from '../../utils/accountingUtils';
 import SortIndicator from './SortIndicator';
 
@@ -11,48 +11,99 @@ export default function StudentListTable({
   sortDirection,
   onSort
 }) {
+  const handleKeyDownRow = (e, id) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onSelectRow(id);
+    }
+  };
+
+  const handleKeyDownHeader = (e, field) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onSort(field);
+    }
+  };
+
   return (
-    <table className="modern-report-table">
+    <table className="modern-report-table" aria-label="Student Admission & Fee Register">
       <thead>
         <tr>
-          <th style={{ width: '60px' }}>
+          <th scope="col" style={{ width: '60px' }}>
             <span className="th-content">#</span>
           </th>
-          <th className="sortable" onClick={() => onSort('id')}>
+          <th 
+            scope="col"
+            className="sortable" 
+            onClick={() => onSort('id')}
+            onKeyDown={(e) => handleKeyDownHeader(e, 'id')}
+            tabIndex={0}
+            role="columnheader"
+            aria-sort={sortField === 'id' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
+          >
             <span className="th-content">
               <span>Student ID</span>
               <SortIndicator currentField="id" activeField={sortField} direction={sortDirection} />
             </span>
           </th>
-          <th className="sortable" onClick={() => onSort('date')}>
+          <th 
+            scope="col"
+            className="sortable" 
+            onClick={() => onSort('date')}
+            onKeyDown={(e) => handleKeyDownHeader(e, 'date')}
+            tabIndex={0}
+            role="columnheader"
+            aria-sort={sortField === 'date' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
+          >
             <span className="th-content">
-              <Calendar size={13} />
+              <Calendar size={13} aria-hidden="true" />
               <span>Admission Date</span>
               <SortIndicator currentField="date" activeField={sortField} direction={sortDirection} />
             </span>
           </th>
-          <th className="sortable" onClick={() => onSort('name')}>
+          <th 
+            scope="col"
+            className="sortable" 
+            onClick={() => onSort('name')}
+            onKeyDown={(e) => handleKeyDownHeader(e, 'name')}
+            tabIndex={0}
+            role="columnheader"
+            aria-sort={sortField === 'name' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
+          >
             <span className="th-content">
-              <Users size={13} />
+              <Users size={13} aria-hidden="true" />
               <span>Student Name</span>
               <SortIndicator currentField="name" activeField={sortField} direction={sortDirection} />
             </span>
           </th>
-          <th className="sortable" onClick={() => onSort('course')}>
+          <th 
+            scope="col"
+            className="sortable" 
+            onClick={() => onSort('course')}
+            onKeyDown={(e) => handleKeyDownHeader(e, 'course')}
+            tabIndex={0}
+            role="columnheader"
+            aria-sort={sortField === 'course' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
+          >
             <span className="th-content">
-              <BookOpen size={13} />
+              <BookOpen size={13} aria-hidden="true" />
               <span>Course</span>
               <SortIndicator currentField="course" activeField={sortField} direction={sortDirection} />
             </span>
           </th>
-          <th className="sortable" onClick={() => onSort('finalFee')}>
+          <th 
+            scope="col"
+            className="sortable" 
+            onClick={() => onSort('finalFee')}
+            onKeyDown={(e) => handleKeyDownHeader(e, 'finalFee')}
+            tabIndex={0}
+            role="columnheader"
+            aria-sort={sortField === 'finalFee' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
+          >
             <span className="th-content right">
               <span>Final Fee</span>
               <SortIndicator currentField="finalFee" activeField={sortField} direction={sortDirection} />
             </span>
-          </th>
-          <th style={{ width: '110px' }}>
-            <span className="th-content">Status</span>
           </th>
         </tr>
       </thead>
@@ -66,6 +117,10 @@ export default function StudentListTable({
               key={row.id || idx}
               className={selectedRowId === row.id ? 'row-selected' : ''}
               onClick={() => onSelectRow(row.id)}
+              onKeyDown={(e) => handleKeyDownRow(e, row.id)}
+              tabIndex={0}
+              role="row"
+              aria-selected={selectedRowId === row.id}
             >
               <td>
                 <span className="cell-index-badge">
@@ -79,7 +134,7 @@ export default function StudentListTable({
               </td>
               <td>
                 <div className="due-date-cell-flex">
-                  <Calendar size={13} color="#64748b" />
+                  <Calendar size={13} color="#64748b" aria-hidden="true" />
                   <span className="date-text-primary">{formatDisplayDate(row.date)}</span>
                 </div>
               </td>
@@ -96,12 +151,6 @@ export default function StudentListTable({
               <td style={{ textAlign: 'right' }}>
                 <span className="amount-badge-standard">
                   {formatCurrency(row.finalFee)}
-                </span>
-              </td>
-              <td>
-                <span className="status-tag-ok">
-                  <CheckCircle2 size={11} />
-                  <span>Enrolled</span>
                 </span>
               </td>
             </tr>

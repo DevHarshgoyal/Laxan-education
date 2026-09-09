@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BadgeCheck } from 'lucide-react';
 import { apiRequest } from '../../api/client';
 import { logger } from '../../utils/logger';
-import './ProfileCard.css';
+import '../../styles/ProfileCard.css';
 
 const ProfileCard = ({ studentId }) => {
   const [profile, setProfile] = useState({ name: '', course: '', id: '', profile_id: '' });
