@@ -39,13 +39,33 @@ CREATE TABLE IF NOT EXISTS users (
 | `accountant` | Financial Operations | View financial ledgers, day-wise collections, remaining dues, and admission fees |
 | `user` | Standard Staff | Restricted read access |
 
-### Active Authorized Accounts
-| Username | Role | Password |
+### Active Authorized Accounts (Default Seed)
+| Username | Role | Default Password |
 |---|---|---|
 | `admin1` | `admin` | `laxanadmin1@2026India` |
 | `accountant1` | `accountant` | `laxanaccountant1@2026India` |
 | `admin2` | `admin` | `laxanadmin2@2026India` |
 | `accountant2` | `accountant` | `laxanaccountant2@2026India` |
+
+### How Default Users Are Automatically Created on Deployment
+
+When the backend starts up in any environment (local, staging, or production), it automatically ensures that database tables and baseline administrator/accountant accounts are present:
+
+1. **Trigger**:
+   Inside [`backend/controllers/accountingController.js`](file:///c:/Users/Anshul%20computers/.gemini/antigravity/scratch/laxan-dashboard/backend/controllers/accountingController.js), the function `ensureUsersTableAndSeed()` is called automatically on module load when `node server.js` boots:
+   ```javascript
+   // backend/controllers/accountingController.js (Line 48)
+   ensureUsersTableAndSeed();
+   ```
+
+2. **Execution Steps**:
+   - **Schema Verification**: Runs `CREATE TABLE IF NOT EXISTS users (...)` to guarantee the authentication table exists without causing migration errors.
+   - **Count Check**: Executes `SELECT COUNT(*) as count FROM users`.
+   - **Initial Seeding**: If `count === 0` (which occurs on a new deployment or empty database), it automatically encrypts each default password using `bcrypt.hash(password, 10)` and inserts the accounts above into the production database.
+   - **Idempotency**: If the table already contains user records (`count > 0`), the seeder skips insertion entirely, preserving any custom or modified credentials.
+
+> [!TIP]
+> Once your production environment is live, you can change the passwords of these default accounts or create new accounts at any time using `npm run create-user` or `node create_user.js`. The startup script will **never** overwrite existing accounts.
 
 ---
 

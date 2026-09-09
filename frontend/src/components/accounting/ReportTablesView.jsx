@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { 
   Calendar, Search, RefreshCw, 
   AlertCircle, Wallet, Receipt, Users, 
@@ -6,19 +6,50 @@ import {
 } from 'lucide-react';
 import { apiRequest } from '../../api/client';
 import { logger } from '../../utils/logger';
-import { formatDisplayDate } from '../../utils/accountingUtils';
+import { formatDisplayDate, getCurrentWeekRange } from '../../utils/accountingUtils';
 import RemainingFeesTable from './RemainingFeesTable';
 import DayWiseCollectionTable from './DayWiseCollectionTable';
 import StudentListTable from './StudentListTable';
 import ReportSummaryFooter from './ReportSummaryFooter';
 import './ReportTablesView.css';
 
+// ── Report Registry Configuration ───────────────────────────────────
+const REPORT_CONFIGS = {
+  'remaining-fees': {
+    id: 'remaining-fees',
+    title: 'Remaining Fee Outstanding Report',
+    shortTitle: 'Remaining Fee Report',
+    icon: Wallet,
+    endpoint: '/api/accounting/reports/remaining-fees',
+    TableComponent: RemainingFeesTable,
+  },
+  'day-wise': {
+    id: 'day-wise',
+    title: 'Day Wise Fee Collection Report',
+    shortTitle: 'Day Wise Collection Report',
+    icon: Receipt,
+    endpoint: '/api/accounting/reports/day-wise-collection',
+    TableComponent: DayWiseCollectionTable,
+  },
+  'student-list': {
+    id: 'student-list',
+    title: 'Student Admission & Fee Register',
+    shortTitle: 'Student Admissions List',
+    icon: Users,
+    endpoint: '/api/accounting/reports/student-list',
+    TableComponent: StudentListTable,
+  },
+};
+
+const NUMERIC_SORT_FIELDS = new Set(['remainFee', 'amount', 'finalFee', 'id']);
+
 export default function ReportTablesView() {
   const [activeReport, setActiveReport] = useState('remaining-fees');
   
-  // Date filter inputs
-  const [fromDate, setFromDate] = useState('2026-09-01');
-  const [toDate, setToDate] = useState('2026-09-05');
+  // Date filter inputs — dynamically computed to current week
+  const currentWeek = useMemo(() => getCurrentWeekRange(), []);
+  const [fromDate, setFromDate] = useState(currentWeek.from);
+  const [toDate, setToDate] = useState(currentWeek.to);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedRowId, setSelectedRowId] = useState(null);
 
@@ -30,55 +61,50 @@ export default function ReportTablesView() {
   const [reportData, setReportData] = useState(null);
   const [error, setError] = useState(null);
 
-  // Intelligent date presets based on report type
-  const handleReportSwitch = (reportKey) => {
-    setActiveReport(reportKey);
-    setSelectedRowId(null);
-    setSearchTerm('');
-    setSortField(null);
-    if (reportKey === 'remaining-fees') {
-      setFromDate('2026-09-01');
-      setToDate('2026-09-05');
-    } else if (reportKey === 'day-wise') {
-      setFromDate('2026-05-12');
-      setToDate('2026-05-12');
-    } else if (reportKey === 'student-list') {
-      setFromDate('2026-05-01');
-      setToDate('2026-05-06');
-    }
-  };
+  const activeConfig = REPORT_CONFIGS[activeReport] || REPORT_CONFIGS['remaining-fees'];
+  const ActiveIcon = activeConfig.icon;
+  const ActiveTable = activeConfig.TableComponent;
 
-  const fetchReport = async () => {
+  // Fetch report data
+  const fetchReport = useCallback(async (customFrom, customTo, customReport) => {
+    const reportKey = customReport || activeReport;
+    const from = customFrom !== undefined ? customFrom : fromDate;
+    const to = customTo !== undefined ? customTo : toDate;
+    const config = REPORT_CONFIGS[reportKey];
+
+    if (!config) return;
+
     setLoading(true);
     setError(null);
     try {
       const params = new URLSearchParams();
-      if (fromDate) params.append('from', fromDate);
-      if (toDate) params.append('to', toDate);
+      if (from) params.append('from', from);
+      if (to) params.append('to', to);
 
-      let endpoint = '';
-      if (activeReport === 'remaining-fees') {
-        endpoint = `/api/accounting/reports/remaining-fees?${params.toString()}`;
-      } else if (activeReport === 'day-wise') {
-        endpoint = `/api/accounting/reports/day-wise-collection?${params.toString()}`;
-      } else if (activeReport === 'student-list') {
-        endpoint = `/api/accounting/reports/student-list?${params.toString()}`;
-      }
-
+      const endpoint = `${config.endpoint}?${params.toString()}`;
       const res = await apiRequest(endpoint);
+      
       setReportData(res);
-      if (res?.data && res.data.length > 0) {
-        setSelectedRowId(res.data[0].id);
-      } else {
-        setSelectedRowId(null);
-      }
+      setSelectedRowId(res?.data?.length > 0 ? res.data[0].id : null);
     } catch (err) {
-      logger.error('ReportTablesView', `Failed to load ${activeReport} report data:`, err);
+      logger.error('ReportTablesView', `Failed to load ${reportKey} report data:`, err);
       setError(err.message || 'Failed to load report data');
       setReportData(null);
     } finally {
       setLoading(false);
     }
+  }, [activeReport, fromDate, toDate]);
+
+  // Tab switch handler: dynamically sets to current week
+  const handleReportSwitch = (reportKey) => {
+    if (reportKey === activeReport) return;
+    const week = getCurrentWeekRange();
+    setActiveReport(reportKey);
+    setSelectedRowId(null);
+    setSearchTerm('');
+    setSortField(null);
+    setFromDate(week.from);
+    setToDate(week.to);
   };
 
   // Re-fetch whenever report tab changes
@@ -91,45 +117,39 @@ export default function ReportTablesView() {
     fetchReport();
   };
 
-  const handleSort = (field) => {
-    if (sortField === field) {
-      if (sortDirection === 'asc') {
-        setSortDirection('desc');
-      } else {
-        setSortField(null);
-        setSortDirection('asc');
+  const handleSort = useCallback((field) => {
+    setSortField(prevField => {
+      if (prevField === field) {
+        setSortDirection(prevDir => (prevDir === 'asc' ? 'desc' : 'asc'));
+        return field;
       }
-    } else {
-      setSortField(field);
       setSortDirection('asc');
-    }
-  };
+      return field;
+    });
+  }, []);
 
   // Filtered & Sorted items
   const processedData = useMemo(() => {
     if (!reportData?.data) return [];
     let items = [...reportData.data];
 
-    // 1. Instant client-side search across visible columns
-    if (searchTerm.trim()) {
-      const q = searchTerm.trim().toLowerCase();
+    // 1. Client-side search across relevant visible columns
+    const cleanSearch = searchTerm.trim().toLowerCase();
+    if (cleanSearch) {
       items = items.filter(r => {
-        const nameMatch = r.name && String(r.name).toLowerCase().includes(q);
-        const idMatch = (r.memberid || r.id) && String(r.memberid || r.id).toLowerCase().includes(q);
-        const courseMatch = r.course && String(r.course).toLowerCase().includes(q);
-        const recnoMatch = r.recno && String(r.recno).toLowerCase().includes(q);
-        const pmodeMatch = r.pmode && String(r.pmode).toLowerCase().includes(q);
-        return nameMatch || idMatch || courseMatch || recnoMatch || pmodeMatch;
+        const searchableFields = [r.name, r.memberid || r.id, r.course, r.recno, r.pmode];
+        return searchableFields.some(val => val != null && String(val).toLowerCase().includes(cleanSearch));
       });
     }
 
     // 2. Client-side sorting
     if (sortField) {
+      const isNumeric = NUMERIC_SORT_FIELDS.has(sortField);
       items.sort((a, b) => {
         let valA = a[sortField];
         let valB = b[sortField];
 
-        if (sortField === 'remainFee' || sortField === 'amount' || sortField === 'finalFee' || sortField === 'id') {
+        if (isNumeric) {
           valA = Number(valA) || 0;
           valB = Number(valB) || 0;
         } else {
@@ -148,94 +168,67 @@ export default function ReportTablesView() {
 
   // Dynamic aggregates based on filtered rows
   const aggregates = useMemo(() => {
-    if (!processedData || processedData.length === 0) {
-      return {
-        totalRemainFee: 0,
-        totalAmount: 0,
-        cashAmount: 0,
-        bankAmount: 0,
-        totalAdmissions: 0,
-        totalFinalFee: 0,
-        count: 0
-      };
-    }
+    return processedData.reduce((acc, row) => {
+      const amt = Number(row.amount) || 0;
+      const mode = String(row.pmode || '').toLowerCase();
 
-    let totalRemain = 0;
-    let totalAmt = 0;
-    let cashAmt = 0;
-    let bankAmt = 0;
-    let totalFinal = 0;
+      acc.totalRemainFee += Number(row.remainFee) || 0;
+      acc.totalAmount += amt;
+      if (mode === 'cash') {
+        acc.cashAmount += amt;
+      } else if (mode === 'bank' || mode === 'online' || mode === 'upi') {
+        acc.bankAmount += amt;
+      }
+      acc.totalFinalFee += Number(row.finalFee) || 0;
 
-    processedData.forEach(r => {
-      totalRemain += (Number(r.remainFee) || 0);
-      const amt = Number(r.amount) || 0;
-      totalAmt += amt;
-      const mode = String(r.pmode || '').toLowerCase();
-      if (mode === 'cash') cashAmt += amt;
-      else if (mode === 'bank' || mode === 'online' || mode === 'upi') bankAmt += amt;
-      totalFinal += (Number(r.finalFee) || 0);
-    });
-
-    return {
-      totalRemainFee: totalRemain,
-      totalAmount: totalAmt,
-      cashAmount: cashAmt,
-      bankAmount: bankAmt,
+      return acc;
+    }, {
+      totalRemainFee: 0,
+      totalAmount: 0,
+      cashAmount: 0,
+      bankAmount: 0,
       totalAdmissions: processedData.length,
-      totalFinalFee: totalFinal,
+      totalFinalFee: 0,
       count: processedData.length
-    };
+    });
   }, [processedData]);
 
   return (
     <div className="report-tables-wrapper">
-      {/* ── 1. Modern Report Selector Bar ── */}
-      <div className="report-selector-bar">
-        <div className="report-pills-group">
-          <button 
-            type="button"
-            className={`report-selector-pill ${activeReport === 'remaining-fees' ? 'active' : ''}`}
-            onClick={() => handleReportSwitch('remaining-fees')}
-          >
-            <Wallet size={15} className="pill-icon" />
-            <span>Remaining Fee Report</span>
-          </button>
-          <button 
-            type="button"
-            className={`report-selector-pill ${activeReport === 'day-wise' ? 'active' : ''}`}
-            onClick={() => handleReportSwitch('day-wise')}
-          >
-            <Receipt size={15} className="pill-icon" />
-            <span>Day Wise Collection Report</span>
-          </button>
-          <button 
-            type="button"
-            className={`report-selector-pill ${activeReport === 'student-list' ? 'active' : ''}`}
-            onClick={() => handleReportSwitch('student-list')}
-          >
-            <Users size={15} className="pill-icon" />
-            <span>Student Admissions List</span>
-          </button>
+      {/* ── 1. Report Navigation Tabs ── */}
+      <nav className="report-selector-bar" aria-label="Report Selector">
+        <div className="report-pills-group" role="tablist">
+          {Object.values(REPORT_CONFIGS).map((config) => {
+            const Icon = config.icon;
+            const isActive = activeReport === config.id;
+            return (
+              <button 
+                key={config.id}
+                type="button"
+                role="tab"
+                aria-selected={isActive}
+                className={`report-selector-pill ${isActive ? 'active' : ''}`}
+                onClick={() => handleReportSwitch(config.id)}
+              >
+                <Icon size={15} className="pill-icon" />
+                <span>{config.shortTitle}</span>
+              </button>
+            );
+          })}
         </div>
-      </div>
+      </nav>
 
-      {/* ── 2. Executive Report Sheet Card ── */}
-      <div className="report-sheet-card">
+      {/* ── 2. Master Institutional Report Card ── */}
+      <section className="report-sheet-card">
         {/* Header Banner */}
-        <div className="report-header-banner">
+        <header className="report-header-banner">
           <div className="header-banner-left">
-            <div className="report-icon-avatar">
-              {activeReport === 'remaining-fees' && <Wallet size={22} />}
-              {activeReport === 'day-wise' && <Receipt size={22} />}
-              {activeReport === 'student-list' && <Users size={22} />}
+            <div className="report-icon-avatar" aria-hidden="true">
+              <ActiveIcon size={22} />
             </div>
             <div className="report-header-titles">
               <span className="report-institution-name">Laxan Educational Institute • Accounts</span>
-              <h2 className="report-main-title">
-                {activeReport === 'remaining-fees' && 'Remaining Fee Outstanding Report'}
-                {activeReport === 'day-wise' && 'Day Wise Fee Collection Report'}
-                {activeReport === 'student-list' && 'Student Admission & Fee Register'}
-              </h2>
+              <h2 className="report-main-title">{activeConfig.title}</h2>
             </div>
           </div>
 
@@ -249,19 +242,20 @@ export default function ReportTablesView() {
               <span>{processedData.length} Records</span>
             </div>
           </div>
-        </div>
+        </header>
 
-        {/* Control Toolbar */}
+        {/* Controls: Date Filter & Live Search */}
         <div className="report-control-toolbar">
           <div className="toolbar-primary-row">
             <form onSubmit={handleShowClick} className="date-filters-form">
               <div className="filter-input-group">
-                <label className="filter-label-text">
+                <label htmlFor="report-from-date" className="filter-label-text">
                   <Calendar size={12} />
                   <span>From Date</span>
                 </label>
                 <div className="date-input-wrapper">
                   <input 
+                    id="report-from-date"
                     type="date"
                     className="modern-date-input"
                     value={fromDate}
@@ -271,12 +265,13 @@ export default function ReportTablesView() {
               </div>
 
               <div className="filter-input-group">
-                <label className="filter-label-text">
+                <label htmlFor="report-to-date" className="filter-label-text">
                   <Calendar size={12} />
                   <span>To Date</span>
                 </label>
                 <div className="date-input-wrapper">
                   <input 
+                    id="report-to-date"
                     type="date"
                     className="modern-date-input"
                     value={toDate}
@@ -291,15 +286,16 @@ export default function ReportTablesView() {
               </button>
             </form>
 
-            {/* In-table Live Search Input */}
+            {/* In-table Live Search */}
             <div className="live-search-box">
-              <Search size={15} className="live-search-icon" />
+              <Search size={15} className="live-search-icon" aria-hidden="true" />
               <input
                 type="text"
                 className="live-search-input"
                 placeholder="Search name, receipt, course, ID..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                aria-label="Search records"
               />
               {searchTerm && (
                 <button 
@@ -307,6 +303,7 @@ export default function ReportTablesView() {
                   className="search-clear-btn" 
                   onClick={() => setSearchTerm('')}
                   title="Clear search"
+                  aria-label="Clear search"
                 >
                   <X size={14} />
                 </button>
@@ -315,20 +312,20 @@ export default function ReportTablesView() {
           </div>
         </div>
 
-        {/* ── 3. Modular High-Performance Data Tables ── */}
+        {/* ── 3. Modular High-Performance Data Table ── */}
         <div className="table-data-wrapper">
           {error ? (
-            <div className="error-table-state">
+            <div className="error-table-state" role="alert">
               <AlertCircle size={32} color="#ef4444" />
               <h4 className="empty-state-title text-danger">Unable to load report</h4>
               <p className="empty-state-desc">{error}</p>
-              <button type="button" onClick={fetchReport} className="filter-apply-btn mt-2">
+              <button type="button" onClick={() => fetchReport()} className="filter-apply-btn mt-2">
                 <RefreshCw size={14} />
                 <span>Retry Fetch</span>
               </button>
             </div>
           ) : loading ? (
-            <div className="loading-table-state">
+            <div className="loading-table-state" role="status">
               <div className="loading-spinner-ring" />
               <h4 className="empty-state-title">Retrieving Financial Ledger...</h4>
               <p className="empty-state-desc">Compiling institutional records and balances</p>
@@ -352,51 +349,25 @@ export default function ReportTablesView() {
               )}
             </div>
           ) : (
-            <>
-              {activeReport === 'remaining-fees' && (
-                <RemainingFeesTable
-                  data={processedData}
-                  selectedRowId={selectedRowId}
-                  onSelectRow={setSelectedRowId}
-                  sortField={sortField}
-                  sortDirection={sortDirection}
-                  onSort={handleSort}
-                />
-              )}
-
-              {activeReport === 'day-wise' && (
-                <DayWiseCollectionTable
-                  data={processedData}
-                  selectedRowId={selectedRowId}
-                  onSelectRow={setSelectedRowId}
-                  sortField={sortField}
-                  sortDirection={sortDirection}
-                  onSort={handleSort}
-                />
-              )}
-
-              {activeReport === 'student-list' && (
-                <StudentListTable
-                  data={processedData}
-                  selectedRowId={selectedRowId}
-                  onSelectRow={setSelectedRowId}
-                  sortField={sortField}
-                  sortDirection={sortDirection}
-                  onSort={handleSort}
-                />
-              )}
-            </>
+            <ActiveTable
+              data={processedData}
+              selectedRowId={selectedRowId}
+              onSelectRow={setSelectedRowId}
+              sortField={sortField}
+              sortDirection={sortDirection}
+              onSort={handleSort}
+            />
           )}
         </div>
 
-        {/* ── 4. Executive Financial KPI Summary Footer ── */}
+        {/* ── 4. Financial KPI Summary Footer ── */}
         {!loading && (
           <ReportSummaryFooter 
             activeReport={activeReport} 
             aggregates={aggregates} 
           />
         )}
-      </div>
+      </section>
     </div>
   );
 }

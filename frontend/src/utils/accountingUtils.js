@@ -2,6 +2,33 @@
 // Shared formatting and utility functions for accounting tables and reports
 
 /**
+ * Calculates the current week date range (Monday to Sunday) in local YYYY-MM-DD format.
+ */
+export function getCurrentWeekRange(referenceDate = new Date()) {
+  const d = new Date(referenceDate);
+  const day = d.getDay(); // 0 is Sunday, 1 is Monday, ..., 6 is Saturday
+  const diffToMonday = day === 0 ? -6 : 1 - day;
+
+  const monday = new Date(d);
+  monday.setDate(d.getDate() + diffToMonday);
+
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+
+  const formatLocalYMD = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const dayOfMonth = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${dayOfMonth}`;
+  };
+
+  return {
+    from: formatLocalYMD(monday),
+    to: formatLocalYMD(sunday)
+  };
+}
+
+/**
  * Formats a numeric value into INR currency format (e.g. ₹12,500.00)
  */
 export function formatCurrency(num) {

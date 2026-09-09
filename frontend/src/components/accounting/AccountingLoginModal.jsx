@@ -20,7 +20,7 @@ const AccountingLoginModal = ({ onLoginSuccess, onCancel }) => {
     setError('');
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || '';
+      const apiUrl = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
       const res = await fetch(`${apiUrl}/api/accounting/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -33,12 +33,15 @@ const AccountingLoginModal = ({ onLoginSuccess, onCancel }) => {
         throw new Error(data.error || 'Authentication failed');
       }
 
-      // Save session in sessionStorage
+      // Save session in sessionStorage and localStorage
+      const userWithToken = { ...data.user, token: data.token };
       sessionStorage.setItem('accounting_user', JSON.stringify(data.user));
+      localStorage.setItem('accounting_user', JSON.stringify(data.user));
       if (data.token) {
         sessionStorage.setItem('accounting_token', data.token);
+        localStorage.setItem('accounting_token', data.token);
       }
-      onLoginSuccess(data.user);
+      onLoginSuccess(userWithToken);
     } catch (err) {
       logger.warn('AuthModal', `Login failed for user "${username.trim()}": ${err.message}`);
       setError(err.message || 'Login failed. Please verify credentials.');

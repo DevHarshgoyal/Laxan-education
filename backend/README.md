@@ -20,4 +20,11 @@ npm run create-user
 node create_user.js <username> <password> [role] [email]
 ```
 
+## Automatic Database Initialization & Seeding on Deployment
+
+When the backend is deployed and starts up (`node server.js`):
+- It automatically verifies that the `users` table exists (`CREATE TABLE IF NOT EXISTS users`).
+- If the table is empty (`count === 0`), it automatically hashes passwords with `bcrypt` and inserts default institutional accounts (`admin1`, `accountant1`, `admin2`, `accountant2`).
+- If records already exist, it leaves them untouched.
+
 For full documentation on roles, permissions, database schemas, and security configurations, refer to [ACCOUNTING_USER_GUIDE.md](../ACCOUNTING_USER_GUIDE.md).

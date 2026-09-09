@@ -1,7 +1,26 @@
 /* ══════════════════════════════════════════════════════════════════
    LAXAN DASHBOARD - ACCOUNT REPORT TABLES STYLING
-   Executive, modern, and accessible financial reporting tables
+   Executive Financial Reporting Tables, Filters, and KPIs
    ══════════════════════════════════════════════════════════════════ */
+
+:root {
+  --acc-navy-950: #0b1528;
+  --acc-navy-900: #0f172a;
+  --acc-navy-800: #152238;
+  --acc-navy-700: #1e293b;
+  --acc-gold-500: #c9a84c;
+  --acc-gold-400: #dfbf6c;
+  --acc-gold-100: #fefce8;
+  --acc-slate-50:  #f8fafc;
+  --acc-slate-100: #f1f5f9;
+  --acc-slate-200: #e2e8f0;
+  --acc-slate-300: #cbd5e1;
+  --acc-slate-400: #94a3b8;
+  --acc-slate-500: #64748b;
+  --acc-slate-700: #334155;
+  --acc-slate-800: #1e293b;
+  --acc-slate-900: #0f172a;
+}
 
 .report-tables-wrapper {
   width: 100%;
@@ -11,14 +30,16 @@
   animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ── 1. Top Report Navigation & Action Bar ── */
+/* ──────────────────────────────────────────────────────────────────
+   1. REPORT NAVIGATION TABS (Top Bar)
+   ────────────────────────────────────────────────────────────────── */
 .report-selector-bar {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   gap: 14px;
-  background: linear-gradient(135deg, #0b1528 0%, #152238 100%);
+  background: linear-gradient(135deg, var(--acc-navy-950) 0%, var(--acc-navy-800) 100%);
   padding: 12px 18px;
   border-radius: 16px;
   border: 1px solid rgba(201, 168, 76, 0.2);
@@ -37,7 +58,7 @@
   gap: 8px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #94a3b8;
+  color: var(--acc-slate-400);
   padding: 9px 18px;
   border-radius: 12px;
   font-size: 13px;
@@ -55,63 +76,32 @@
 }
 
 .report-selector-pill.active {
-  background: linear-gradient(135deg, #c9a84c 0%, #dfbf6c 100%);
-  color: #0b1528;
-  border-color: #c9a84c;
+  background: linear-gradient(135deg, var(--acc-gold-500) 0%, var(--acc-gold-400) 100%);
+  color: var(--acc-navy-950);
+  border-color: var(--acc-gold-500);
   box-shadow: 0 4px 16px rgba(201, 168, 76, 0.35);
   font-weight: 700;
 }
 
 .report-selector-pill.active .pill-icon {
-  color: #0b1528;
+  color: var(--acc-navy-950);
 }
 
-.report-actions-group {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.report-tool-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  color: #f8fafc;
-  padding: 8px 14px;
-  border-radius: 10px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.report-tool-btn:hover {
-  background: rgba(201, 168, 76, 0.18);
-  color: #fce7a1;
-  border-color: rgba(201, 168, 76, 0.45);
-  transform: translateY(-1px);
-}
-
-.report-tool-btn:active {
-  transform: translateY(0);
-}
-
-/* ── 2. Master Institutional Report Card ── */
+/* ──────────────────────────────────────────────────────────────────
+   2. EXECUTIVE REPORT SHEET CARD & HEADER
+   ────────────────────────────────────────────────────────────────── */
 .report-sheet-card {
   background: #ffffff;
   border-radius: 20px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--acc-slate-200);
   box-shadow: 0 12px 36px rgba(11, 21, 40, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
   overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
-/* ── Header Banner inside Report Sheet ── */
 .report-header-banner {
-  background: linear-gradient(135deg, #0b1528 0%, #152238 60%, #1e293b 100%);
+  background: linear-gradient(135deg, var(--acc-navy-950) 0%, var(--acc-navy-800) 60%, var(--acc-navy-700) 100%);
   padding: 22px 26px;
   color: #ffffff;
   display: flex;
@@ -134,7 +124,7 @@
   border-radius: 12px;
   background: rgba(201, 168, 76, 0.15);
   border: 1px solid rgba(201, 168, 76, 0.35);
-  color: #c9a84c;
+  color: var(--acc-gold-500);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -151,7 +141,7 @@
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 1.2px;
-  color: #c9a84c;
+  color: var(--acc-gold-500);
   font-weight: 700;
 }
 
@@ -176,27 +166,27 @@
   gap: 6px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #e2e8f0;
+  color: var(--acc-slate-200);
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
+  letter-spacing: 0.1px;
 }
 
 .header-badge-chip.gold {
-  background: rgba(201, 168, 76, 0.16);
-  border-color: rgba(201, 168, 76, 0.35);
-  color: #fae19c;
+  background: rgba(201, 168, 76, 0.18);
+  border-color: rgba(201, 168, 76, 0.4);
+  color: #fce7a1;
 }
 
-/* ── 3. Filter Controls & In-Table Live Search Toolbar ── */
+/* ──────────────────────────────────────────────────────────────────
+   3. CONTROLS: DATE FILTER & LIVE SEARCH TOOLBAR
+   ────────────────────────────────────────────────────────────────── */
 .report-control-toolbar {
-  background: #f8fafc;
-  padding: 16px 24px;
-  border-bottom: 1px solid #e2e8f0;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+  padding: 18px 24px;
+  background: var(--acc-slate-50);
+  border-bottom: 1px solid var(--acc-slate-200);
 }
 
 .toolbar-primary-row {
@@ -223,7 +213,7 @@
 .filter-label-text {
   font-size: 12px;
   font-weight: 600;
-  color: #475569;
+  color: var(--acc-slate-500);
   display: flex;
   align-items: center;
   gap: 4px;
@@ -237,8 +227,8 @@
 
 .modern-date-input {
   background: #ffffff;
-  border: 1px solid #cbd5e1;
-  color: #0f172a;
+  border: 1px solid var(--acc-slate-300);
+  color: var(--acc-navy-900);
   font-size: 13px;
   font-weight: 500;
   font-family: inherit;
@@ -259,9 +249,9 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #0f172a;
+  background: var(--acc-navy-900);
   color: #ffffff;
-  border: 1px solid #0f172a;
+  border: 1px solid var(--acc-navy-900);
   font-size: 13px;
   font-weight: 600;
   padding: 8px 20px;
@@ -273,7 +263,7 @@
 }
 
 .filter-apply-btn:hover {
-  background: #1e293b;
+  background: var(--acc-navy-700);
   box-shadow: 0 4px 8px rgba(15, 23, 42, 0.2);
   transform: translateY(-1px);
 }
@@ -282,7 +272,13 @@
   transform: translateY(0);
 }
 
+.filter-apply-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
 
+/* In-table Live Search */
 .live-search-box {
   position: relative;
   display: flex;
@@ -295,18 +291,18 @@
 .live-search-icon {
   position: absolute;
   left: 12px;
-  color: #94a3b8;
+  color: var(--acc-slate-400);
   pointer-events: none;
 }
 
 .live-search-input {
   width: 100%;
   background: #ffffff;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--acc-slate-300);
   border-radius: 20px;
   padding: 7px 34px 7px 36px;
   font-size: 13px;
-  color: #0f172a;
+  color: var(--acc-navy-900);
   outline: none;
   font-family: inherit;
   transition: all 0.2s ease;
@@ -323,7 +319,7 @@
   right: 10px;
   background: none;
   border: none;
-  color: #94a3b8;
+  color: var(--acc-slate-400);
   cursor: pointer;
   font-size: 16px;
   display: flex;
@@ -336,7 +332,9 @@
   color: #ef4444;
 }
 
-/* ── 4. High-Performance Table Container ── */
+/* ──────────────────────────────────────────────────────────────────
+   4. DATA TABLES & CELL STYLING
+   ────────────────────────────────────────────────────────────────── */
 .table-data-wrapper {
   position: relative;
   width: 100%;
@@ -345,26 +343,24 @@
   background: #ffffff;
 }
 
-/* Custom Sleek Scrollbar */
 .table-data-wrapper::-webkit-scrollbar {
   height: 8px;
   width: 8px;
 }
 
 .table-data-wrapper::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: var(--acc-slate-100);
 }
 
 .table-data-wrapper::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: var(--acc-slate-300);
   border-radius: 4px;
 }
 
 .table-data-wrapper::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: var(--acc-slate-400);
 }
 
-/* ── Modern Institutional Table ── */
 .modern-report-table {
   width: 100%;
   border-collapse: separate;
@@ -373,19 +369,19 @@
   text-align: left;
 }
 
-/* Sticky Header with Elegant Slate Finish */
+/* Sticky Headers */
 .modern-report-table thead th {
   position: sticky;
   top: 0;
   z-index: 10;
-  background: #0f172a;
-  color: #f8fafc;
+  background: var(--acc-navy-900);
+  color: var(--acc-slate-50);
   font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.6px;
   padding: 13px 16px;
-  border-bottom: 2px solid #c9a84c;
+  border-bottom: 2px solid var(--acc-gold-500);
   border-right: 1px solid rgba(255, 255, 255, 0.08);
   white-space: nowrap;
   user-select: none;
@@ -401,8 +397,8 @@
 }
 
 .modern-report-table thead th.sortable:hover {
-  background: #1e293b;
-  color: #c9a84c;
+  background: var(--acc-navy-700);
+  color: var(--acc-gold-500);
 }
 
 .th-content {
@@ -418,16 +414,16 @@
 .sort-indicator {
   display: inline-flex;
   align-items: center;
-  color: #94a3b8;
+  color: var(--acc-slate-400);
   transition: color 0.15s ease;
 }
 
 .modern-report-table thead th.sortable:hover .sort-indicator,
 .sort-indicator.active {
-  color: #c9a84c;
+  color: var(--acc-gold-500);
 }
 
-/* Table Body Rows */
+/* Table Rows & Interactivity */
 .modern-report-table tbody tr {
   background: #ffffff;
   transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
@@ -439,11 +435,10 @@
 }
 
 .modern-report-table tbody tr:hover {
-  background: #f1f5f9;
-  box-shadow: inset 3px 0 0 #c9a84c;
+  background: var(--acc-slate-100);
+  box-shadow: inset 3px 0 0 var(--acc-gold-500);
 }
 
-/* Selected Row Highlight */
 .modern-report-table tbody tr.row-selected {
   background: #eff6ff !important;
   box-shadow: inset 4px 0 0 #3b82f6;
@@ -453,12 +448,11 @@
   border-bottom-color: #bfdbfe;
 }
 
-/* Table Cells */
 .modern-report-table td {
   padding: 13px 16px;
-  border-bottom: 1px solid #f1f5f9;
-  border-right: 1px solid #f8fafc;
-  color: #1e293b;
+  border-bottom: 1px solid var(--acc-slate-100);
+  border-right: 1px solid var(--acc-slate-50);
+  color: var(--acc-slate-800);
   vertical-align: middle;
 }
 
@@ -466,20 +460,19 @@
   border-right: none;
 }
 
-/* ── Cell Specific Components ── */
+/* Cell Badges & Components */
 .cell-index-badge {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 11px;
   font-weight: 700;
-  color: #64748b;
-  background: #f1f5f9;
+  color: var(--acc-slate-500);
+  background: var(--acc-slate-100);
   padding: 3px 7px;
   border-radius: 6px;
   display: inline-block;
   text-align: center;
   min-width: 26px;
 }
-
 
 .student-info-col {
   display: flex;
@@ -489,13 +482,13 @@
 
 .student-name-text {
   font-weight: 600;
-  color: #0f172a;
+  color: var(--acc-navy-900);
   font-size: 13.5px;
 }
 
 .student-sub-id {
   font-size: 11px;
-  color: #64748b;
+  color: var(--acc-slate-500);
   font-family: ui-monospace, SFMono-Regular, monospace;
   font-weight: 500;
 }
@@ -517,7 +510,7 @@
 .course-pill.dca { background: #fef3c7; color: #92400e; }
 .course-pill.adca { background: #dcfce7; color: #166534; }
 .course-pill.ccc { background: #f3e8ff; color: #6b21a8; }
-.course-pill.default { background: #f1f5f9; color: #475569; }
+.course-pill.default { background: var(--acc-slate-100); color: var(--acc-slate-500); }
 
 /* Financial Amount Badges */
 .amount-badge-due {
@@ -554,7 +547,7 @@
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-weight: 700;
   font-size: 13.5px;
-  color: #0f172a;
+  color: var(--acc-navy-900);
   font-variant-numeric: tabular-nums;
 }
 
@@ -566,9 +559,9 @@
   font-family: ui-monospace, SFMono-Regular, monospace;
   font-weight: 700;
   font-size: 12px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  color: #334155;
+  background: var(--acc-slate-50);
+  border: 1px solid var(--acc-slate-200);
+  color: var(--acc-slate-700);
   padding: 3px 8px;
   border-radius: 6px;
 }
@@ -605,9 +598,9 @@
 }
 
 .pmode-pill.other {
-  background: #f1f5f9;
-  color: #475569;
-  border: 1px solid #cbd5e1;
+  background: var(--acc-slate-100);
+  color: var(--acc-slate-500);
+  border: 1px solid var(--acc-slate-300);
 }
 
 /* Due Date with Status Tag */
@@ -619,7 +612,7 @@
 
 .date-text-primary {
   font-weight: 500;
-  color: #334155;
+  color: var(--acc-slate-700);
 }
 
 .status-tag-overdue {
@@ -650,7 +643,9 @@
   border-radius: 4px;
 }
 
-/* Empty & Loading States */
+/* ──────────────────────────────────────────────────────────────────
+   5. LOADING, EMPTY, AND ERROR STATES
+   ────────────────────────────────────────────────────────────────── */
 .empty-table-state,
 .loading-table-state,
 .error-table-state {
@@ -667,8 +662,8 @@
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: #f1f5f9;
-  color: #94a3b8;
+  background: var(--acc-slate-100);
+  color: var(--acc-slate-400);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -677,13 +672,13 @@
 .empty-state-title {
   font-size: 15px;
   font-weight: 700;
-  color: #334155;
+  color: var(--acc-slate-700);
   margin: 0;
 }
 
 .empty-state-desc {
   font-size: 13px;
-  color: #64748b;
+  color: var(--acc-slate-500);
   max-width: 360px;
   margin: 0;
 }
@@ -691,17 +686,19 @@
 .loading-spinner-ring {
   width: 36px;
   height: 36px;
-  border: 3px solid #e2e8f0;
-  border-top-color: #c9a84c;
+  border: 3px solid var(--acc-slate-200);
+  border-top-color: var(--acc-gold-500);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
 
-/* ── 5. Executive Financial KPI Summary Footer ── */
+/* ──────────────────────────────────────────────────────────────────
+   6. FINANCIAL KPI SUMMARY FOOTER
+   ────────────────────────────────────────────────────────────────── */
 .report-summary-footer {
-  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  background: linear-gradient(180deg, var(--acc-slate-50) 0%, var(--acc-slate-100) 100%);
   padding: 18px 24px;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--acc-slate-200);
 }
 
 .kpi-cards-grid {
@@ -712,7 +709,7 @@
 
 .kpi-card {
   background: #ffffff;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--acc-slate-200);
   border-radius: 14px;
   padding: 14px 18px;
   display: flex;
@@ -756,7 +753,7 @@
 }
 
 .kpi-icon-badge.gold {
-  background: #fefce8;
+  background: var(--acc-gold-100);
   color: #ca8a04;
   border: 1px solid #fef08a;
 }
@@ -772,25 +769,26 @@
   font-size: 11.5px;
   font-weight: 700;
   text-transform: uppercase;
-  color: #64748b;
+  color: var(--acc-slate-500);
   letter-spacing: 0.3px;
 }
 
 .kpi-value {
   font-size: 19px;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--acc-navy-900);
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.3px;
 }
 
 .kpi-subtext {
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--acc-slate-400);
 }
 
-
-/* ── Print Specific Formatting ── */
+/* ──────────────────────────────────────────────────────────────────
+   7. PRINT & RESPONSIVE LAYOUT
+   ────────────────────────────────────────────────────────────────── */
 @media print {
   body {
     background: #ffffff !important;
@@ -801,7 +799,6 @@
   .accounting-nav-tabs,
   .report-selector-bar,
   .report-control-toolbar,
-  .report-tool-btn,
   .live-search-box {
     display: none !important;
   }
@@ -815,15 +812,9 @@
     width: 100% !important;
   }
 
-  .report-header-banner {
-    background: #0f172a !important;
-    color: #ffffff !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
+  .report-header-banner,
   .modern-report-table thead th {
-    background: #0f172a !important;
+    background: var(--acc-navy-900) !important;
     color: #ffffff !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
@@ -834,38 +825,20 @@
   }
 }
 
-/* ── Mobile Responsive Adjustments ── */
 @media (max-width: 768px) {
-  .report-selector-bar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .report-pills-group {
-    flex-direction: column;
-  }
-
-  .report-actions-group {
-    justify-content: flex-end;
-  }
-
-  .toolbar-primary-row {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
+  .report-selector-bar,
+  .report-pills-group,
+  .toolbar-primary-row,
   .date-filters-form {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .modern-date-input {
-    width: 100%;
-  }
-
+  .modern-date-input,
   .live-search-box {
-    max-width: 100%;
+    width: 100%;
     min-width: 100%;
+    max-width: 100%;
   }
 
   .kpi-cards-grid {

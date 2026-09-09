@@ -11,7 +11,7 @@ export async function apiRequest(endpoint, options = {}) {
 
   // Attach JWT Bearer token if available
   const headers = { ...options.headers };
-  const token = sessionStorage.getItem('accounting_token');
+  const token = sessionStorage.getItem('accounting_token') || localStorage.getItem('accounting_token');
   if (token && !headers['Authorization'] && !headers['authorization']) {
     headers['Authorization'] = `Bearer ${token}`;
   }
@@ -25,11 +25,13 @@ export async function apiRequest(endpoint, options = {}) {
     });
 
     if (!res.ok) {
-      // If unauthorized on accounting routes, clear expired or invalid credentials
-      if (res.status === 401 && endpoint.includes('/accounting')) {
+      // If unauthorized on accounting routes (and not during login attempt), clear expired credentials
+      if (res.status === 401 && endpoint.includes('/accounting') && !endpoint.includes('/login')) {
         logger.warn('Auth', `Session expired or invalid for ${endpoint}, redirecting to login modal`);
         sessionStorage.removeItem('accounting_token');
         sessionStorage.removeItem('accounting_user');
+        localStorage.removeItem('accounting_token');
+        localStorage.removeItem('accounting_user');
         window.dispatchEvent(new Event('accounting:unauthorized'));
       }
 
