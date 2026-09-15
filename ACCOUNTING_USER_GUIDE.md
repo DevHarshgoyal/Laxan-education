@@ -42,10 +42,10 @@ CREATE TABLE IF NOT EXISTS users (
 ### Active Authorized Accounts (Default Seed)
 | Username | Role | Default Password |
 |---|---|---|
-| `admin1` | `admin` | `laxanadmin1@2026India` |
-| `accountant1` | `accountant` | `laxanaccountant1@2026India` |
-| `admin2` | `admin` | `laxanadmin2@2026India` |
-| `accountant2` | `accountant` | `laxanaccountant2@2026India` |
+| `admin1` | `admin` |
+| `accountant1` | `accountant` |
+| `admin2` | `admin` | 
+| `accountant2` | `accountant` | 
 
 ### How Default Users Are Automatically Created on Deployment
 
