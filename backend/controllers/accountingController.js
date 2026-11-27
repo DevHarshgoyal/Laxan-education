@@ -6,8 +6,8 @@ const { logger } = require('../middleware/logger');
 const { JWT_SECRET } = require('../middleware/authMiddleware');
 const { parseReportDate } = require('../utils/dateUtils');
 
-// ── Ensure Users Table Exists and Seed Default Static Users ─────────
-async function ensureUsersTableAndSeed() {
+// ── Ensure Users Table Exists and Seed Optional Env Users ────────────
+async function ensureUsersTable() {
   try {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS users (
@@ -22,22 +22,24 @@ async function ensureUsersTableAndSeed() {
 
     const [existing] = await pool.query('SELECT COUNT(*) as count FROM users');
     if (existing[0]?.count === 0) {
-      logger.info('Seeding institutional accounts into users table with encrypted credentials...');
-      const seedUsers = [
-        { username: 'admin1', email: 'admin1@laxan.com', pass: 'laxanadmin1@2026India', role: 'admin' },
-        { username: 'accountant1', email: 'accountant1@laxan.com', pass: 'laxanaccountant1@2026India', role: 'accountant' },
-        { username: 'admin2', email: 'admin2@laxan.com', pass: 'laxanadmin2@2026India', role: 'admin' },
-        { username: 'accountant2', email: 'accountant2@laxan.com', pass: 'laxanaccountant2@2026India', role: 'accountant' }
-      ];
-
-      for (const u of seedUsers) {
-        const hash = await bcrypt.hash(u.pass, 10);
-        await pool.query(
-          'INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)',
-          [u.username, u.email, hash, u.role]
-        );
+      const rawSeedUsers = process.env.SEED_USERS_JSON;
+      if (rawSeedUsers) {
+        const seedUsers = JSON.parse(rawSeedUsers);
+        if (Array.isArray(seedUsers) && seedUsers.length > 0) {
+          logger.info('Seeding user accounts from SEED_USERS_JSON...');
+          for (const u of seedUsers) {
+            if (!u.username || !u.password) continue;
+            const hash = await bcrypt.hash(u.password, 10);
+            await pool.query(
+              'INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)',
+              [u.username, u.email || `${u.username}@laxan.com`, hash, u.role || 'user']
+            );
+          }
+          logger.info('User accounts seeded from SEED_USERS_JSON.');
+        }
+      } else {
+        logger.warn('Users table is empty. Run `node create_user.js` to create initial user accounts.');
       }
-      logger.info('Institutional user accounts verified and secured in database.');
     }
   } catch (err) {
     logger.error('Error verifying/seeding users table:', err);
@@ -45,7 +47,7 @@ async function ensureUsersTableAndSeed() {
 }
 
 // Run user verification on startup
-ensureUsersTableAndSeed();
+ensureUsersTable();
 
 // ── Authentication Controller ────────────────────────────────────────
 

@@ -13,11 +13,25 @@ const bcrypt = require('bcryptjs');
 const readline = require('readline');
 const pool = require('./config/db');
 
-function askQuestion(query) {
+function askQuestion(query, { hidden = false } = {}) {
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
   });
+
+  if (hidden && process.stdin.isTTY) {
+    const origWrite = rl._writeToOutput;
+    let promptShown = false;
+    rl._writeToOutput = function (stringToWrite) {
+      if (!promptShown) {
+        origWrite.call(rl, stringToWrite);
+        if (stringToWrite.includes(query)) promptShown = true;
+      } else if (stringToWrite === '\r\n' || stringToWrite === '\n') {
+        origWrite.call(rl, stringToWrite);
+      }
+    };
+  }
+
   return new Promise((resolve) => rl.question(query, (ans) => {
     rl.close();
     resolve(ans.trim());
@@ -28,7 +42,7 @@ async function run() {
   let [,, argUser, argPass, argRole, argEmail] = process.argv;
 
   let username = argUser;
-  let password = argPass;
+  let password = argPass || process.env.CREATE_USER_PASSWORD;
   let role = argRole;
   let email = argEmail;
 
@@ -43,7 +57,7 @@ async function run() {
   }
 
   if (!password) {
-    password = await askQuestion('Enter password: ');
+    password = await askQuestion('Enter password: ', { hidden: true });
   }
 
   if (!password || password.length < 6) {
@@ -57,8 +71,17 @@ async function run() {
   }
 
   if (!email) {
-    const inputEmail = await askQuestion(`Enter email (default: ${username}@laxan.com): `);
-    email = inputEmail || `${username}@laxan.com`;
+    const defaultDomain = process.env.DEFAULT_EMAIL_DOMAIN;
+    const promptText = defaultDomain
+      ? `Enter email (default: ${username}@${defaultDomain}): `
+      : 'Enter email: ';
+    const inputEmail = await askQuestion(promptText);
+    email = inputEmail || (defaultDomain ? `${username}@${defaultDomain}` : '');
+  }
+
+  if (!email) {
+    console.error('Error: Email cannot be empty.');
+    process.exit(1);
   }
 
   try {
