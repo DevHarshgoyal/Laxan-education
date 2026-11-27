@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import './FeeStatus.css';
+import { apiRequest } from '../../api/client';
+import { logger } from '../../utils/logger';
+import '../../styles/FeeStatus.css';
 
 const FeeStatus = ({ studentId }) => {
   const [feeData, setFeeData] = useState({ pctPaid: 0 });
 
   useEffect(() => {
     if (!studentId) return;
-    fetch(`${import.meta.env.VITE_API_URL}/api/fees?member_id=${studentId}`)
-      .then(res => res.json())
+    apiRequest(`/api/fees?member_id=${studentId}`)
       .then(data => setFeeData(data))
-      .catch(err => console.error("Error fetching fee data:", err));
+      .catch(err => logger.debug('FeeStatus', `Fee data unavailable for ${studentId}: ${err.message}`));
   }, [studentId]);
 
   return (

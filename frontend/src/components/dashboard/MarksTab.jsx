@@ -3,7 +3,9 @@ import {
   ChevronDown, 
   ChevronRight 
 } from 'lucide-react';
-import './MarksTab.css';
+import { apiRequest } from '../../api/client';
+import { logger } from '../../utils/logger';
+import '../../styles/MarksTab.css';
 
 const SUBJECT_CONFIG = [
   { key: 'math_per', name: 'Mathematics', short: 'Math', color: '#3b82f6' },
@@ -18,15 +20,14 @@ const MarksTab = ({ studentId }) => {
 
   useEffect(() => {
     if (!studentId) return;
-    fetch(`${import.meta.env.VITE_API_URL}/api/marks?student_id=${studentId}`)
-      .then(res => res.json())
+    apiRequest(`/api/marks?student_id=${studentId}`)
       .then(data => {
         const sorted = Array.isArray(data) 
           ? [...data].sort((a, b) => new Date(b.date) - new Date(a.date)) 
           : [];
         setTests(sorted);
       })
-      .catch(err => console.error("Error fetching marks:", err));
+      .catch(err => logger.debug('MarksTab', `Marks data unavailable for ${studentId}: ${err.message}`));
   }, [studentId]);
 
   const toggleRow = (rowId) => {
@@ -40,6 +41,14 @@ const MarksTab = ({ studentId }) => {
     if (val >= 80) return '#3b82f6'; // blue
     if (val >= 70) return '#f59e0b'; // gold
     return '#ef4444'; // red
+  };
+
+  const getResultColor = (result) => {
+    if (!result) return '#64748b';
+    const normalized = String(result).trim().toLowerCase();
+    if (['pass', 'passed', 'qualified', 'clear'].includes(normalized)) return '#10b981';
+    if (['fail', 'failed', 'absent'].includes(normalized)) return '#ef4444';
+    return '#3b82f6';
   };
 
   const totalPercent = tests.reduce((sum, test) => sum + parseFloat(test.percent || 0), 0);
@@ -71,6 +80,7 @@ const MarksTab = ({ studentId }) => {
               <tr>
                 <th className="text-muted fw-semibold text-start">TEST DATE</th>
                 <th className="text-muted fw-semibold text-end">OVERALL %</th>
+                <th className="text-muted fw-semibold text-center">RESULT</th>
                 <th className="expand-col text-center" style={{ width: '40px' }}></th>
               </tr>
             </thead>
@@ -106,6 +116,21 @@ const MarksTab = ({ studentId }) => {
                           {isNaN(pct) ? '0%' : `${pct}%`}
                         </span>
                       </td>
+                      <td className="text-center">
+                        {test.result ? (
+                          <span
+                            className="score-pill"
+                            style={{
+                              backgroundColor: `${getResultColor(test.result)}18`,
+                              color: getResultColor(test.result)
+                            }}
+                          >
+                            {test.result}
+                          </span>
+                        ) : (
+                          <span className="text-muted">—</span>
+                        )}
+                      </td>
                       <td className="expand-col text-center">
                         <button className="expand-btn" aria-label="Toggle details">
                           {isExpanded ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
@@ -116,7 +141,7 @@ const MarksTab = ({ studentId }) => {
                     {/* Expandable Details Section */}
                     {isExpanded && (
                       <tr className="expanded-details-tr">
-                        <td colSpan={3} className="expanded-details-td">
+                        <td colSpan={4} className="expanded-details-td">
                           <div className="graphical-chart-wrapper fade-in-down">
                             <div className="bar-chart-container d-flex flex-column gap-3">
                               {subjectsData.map((sub, cIdx) => {
@@ -163,6 +188,7 @@ const MarksTab = ({ studentId }) => {
                     {avgPct.toFixed(2)}%
                   </span>
                 </td>
+                <td></td>
                 <td className="expand-col"></td>
               </tr>
             </tbody>

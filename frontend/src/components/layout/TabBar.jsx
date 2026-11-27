@@ -1,5 +1,5 @@
 import React from 'react';
-import './TabBar.css';
+import '../../styles/TabBar.css';
 
 const tabs = ['Overview', 'Attendance', 'Marks', 'Syllabus'];
 

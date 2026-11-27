@@ -1,0 +1,12 @@
+.fee-status-card {
+  padding: 24px 20px;
+}
+
+.fee-progress-bg {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.fee-progress-labels {
+  font-size: 12px;
+  margin-bottom: 8px;
+}

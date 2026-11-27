@@ -11,7 +11,7 @@ import {
   AlertTriangle,
   Pin
 } from 'lucide-react';
-import './RegisterPage.css';
+import '../styles/RegisterPage.css';
 
 const COURSES = [
   'Combo',

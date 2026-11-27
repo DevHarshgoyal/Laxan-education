@@ -3,6 +3,7 @@ const { randomUUID } = require('crypto');
 const pool = require('../config/db');
 const queries = require('../models/queries');
 const s3 = require('../config/s3');
+const { logger } = require('../middleware/logger');
 
 // ── Helpers ────────────────────────────────────────────────
 
@@ -75,8 +76,9 @@ const registerStudent = async (req, res) => {
     if (req.file) {
       try {
         photo_url = await uploadToS3(req.file);
+        logger.info(`[registerStudent] Successfully uploaded photo for student: ${student_id.trim()}`);
       } catch (s3Err) {
-        console.error('[registerStudent] S3 upload error:', s3Err);
+        logger.error(`[registerStudent] S3 upload error for student: ${student_id.trim()}`, s3Err);
         // Don't block registration if S3 fails — just skip the photo
       }
     }
@@ -87,11 +89,7 @@ const registerStudent = async (req, res) => {
       [student_id.trim(), name.trim(), course_name.trim(), null, 0, photo_url, validity.trim(), gender, profile_id, doa.trim()]
     );
 
-    // ── Seed a blank fees row ──
-    // await pool.query(
-    //   queries.insertFees,
-    //   [student_id.trim(), 0]
-    // );
+    logger.info(`[registerStudent] Student registered successfully: ${student_id.trim()} (ID: ${result.insertId}, Profile: ${profile_id})`);
 
     return res.status(201).json({
       success: true,
@@ -112,7 +110,7 @@ const registerStudent = async (req, res) => {
       },
     });
   } catch (err) {
-    console.error('[registerStudent] DB error:', err);
+    logger.error(`[registerStudent] Database error during registration for student: ${student_id}`, err);
     return res.status(500).json({
       success: false,
       message: 'Database error. Please try again.',

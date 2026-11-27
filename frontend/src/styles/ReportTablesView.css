@@ -1,0 +1,1224 @@
+/* ══════════════════════════════════════════════════════════════════
+   LAXAN DASHBOARD - ACCOUNT REPORT TABLES STYLING
+   Executive Financial Reporting Tables, Filters, and KPIs
+   ══════════════════════════════════════════════════════════════════ */
+
+:root {
+  --acc-navy-950: #0b1528;
+  --acc-navy-900: #0f172a;
+  --acc-navy-800: #152238;
+  --acc-navy-700: #1e293b;
+  --acc-gold-500: #c9a84c;
+  --acc-gold-400: #dfbf6c;
+  --acc-gold-100: #fefce8;
+  --acc-slate-50:  #f8fafc;
+  --acc-slate-100: #f1f5f9;
+  --acc-slate-200: #e2e8f0;
+  --acc-slate-300: #cbd5e1;
+  --acc-slate-400: #94a3b8;
+  --acc-slate-500: #64748b;
+  --acc-slate-700: #334155;
+  --acc-slate-800: #1e293b;
+  --acc-slate-900: #0f172a;
+}
+
+.report-tables-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   1. REPORT NAVIGATION TABS (Top Bar)
+   ────────────────────────────────────────────────────────────────── */
+.report-selector-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  background: linear-gradient(135deg, var(--acc-navy-950) 0%, var(--acc-navy-800) 100%);
+  padding: 12px 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.report-pills-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.report-selector-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--acc-slate-400);
+  padding: 9px 18px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  letter-spacing: 0.1px;
+}
+
+.report-selector-pill:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.report-selector-pill.active {
+  background: linear-gradient(135deg, var(--acc-gold-500) 0%, var(--acc-gold-400) 100%);
+  color: var(--acc-navy-950);
+  border-color: var(--acc-gold-500);
+  box-shadow: 0 4px 16px rgba(201, 168, 76, 0.35);
+  font-weight: 700;
+}
+
+.report-selector-pill.active .pill-icon {
+  color: var(--acc-navy-950);
+}
+
+/* ── Mobile Report Dropdown Selector (Hidden on Desktop) ── */
+.report-mobile-dropdown-container {
+  display: none;
+  position: relative;
+  width: 100%;
+}
+
+.report-dropdown-custom-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #0c172b 0%, #13223f 100%);
+  border: 1px solid rgba(201, 168, 76, 0.35);
+  border-radius: 14px;
+  padding: 11px 16px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  color: #ffffff;
+  text-align: left;
+}
+
+.report-dropdown-custom-card:hover {
+  border-color: var(--acc-gold-400);
+  background: linear-gradient(135deg, #101e38 0%, #172a4e 100%);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3), 0 0 12px rgba(201, 168, 76, 0.2);
+}
+
+.report-dropdown-custom-card.open {
+  border-color: var(--acc-gold-400);
+  box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.25), 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+.report-dropdown-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.report-dropdown-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(201, 168, 76, 0.15);
+  border: 1px solid rgba(201, 168, 76, 0.35);
+  color: var(--acc-gold-400);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.report-dropdown-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.report-dropdown-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--acc-gold-400);
+}
+
+.report-dropdown-selected-name {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.report-dropdown-chevron {
+  color: var(--acc-gold-400);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-left: 8px;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.report-dropdown-chevron.rotate {
+  transform: rotate(180deg);
+}
+
+/* ── Custom Floating Dropdown Menu ── */
+.report-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 1050;
+  background: linear-gradient(180deg, #0e1b33 0%, #081120 100%);
+  border: 1px solid rgba(201, 168, 76, 0.35);
+  border-radius: 16px;
+  padding: 6px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65), 0 0 24px rgba(201, 168, 76, 0.15);
+  backdrop-filter: blur(16px);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  animation: dropdownFade 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes dropdownFade {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.report-dropdown-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+}
+
+.report-dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.report-dropdown-item.active {
+  background: rgba(201, 168, 76, 0.12);
+  border-color: rgba(201, 168, 76, 0.35);
+}
+
+.dropdown-item-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.dropdown-item-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.report-dropdown-item.active .dropdown-item-icon {
+  background: rgba(201, 168, 76, 0.2);
+  border-color: rgba(201, 168, 76, 0.4);
+  color: var(--acc-gold-400);
+}
+
+.dropdown-item-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 2px;
+}
+
+.dropdown-item-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.report-dropdown-item.active .dropdown-item-title {
+  color: var(--acc-gold-400);
+}
+
+.dropdown-item-desc {
+  font-size: 11px;
+  color: #94a3b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdown-item-check {
+  color: var(--acc-gold-400);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+
+/* ──────────────────────────────────────────────────────────────────
+   2. EXECUTIVE REPORT SHEET CARD & HEADER
+   ────────────────────────────────────────────────────────────────── */
+.report-sheet-card {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid var(--acc-slate-200);
+  box-shadow: 0 12px 36px rgba(11, 21, 40, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.report-header-banner {
+  background: linear-gradient(135deg, var(--acc-navy-950) 0%, var(--acc-navy-800) 60%, var(--acc-navy-700) 100%);
+  padding: 22px 26px;
+  color: #ffffff;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  border-bottom: 2px solid rgba(201, 168, 76, 0.3);
+}
+
+.header-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.report-icon-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(201, 168, 76, 0.15);
+  border: 1px solid rgba(201, 168, 76, 0.35);
+  color: var(--acc-gold-500);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.report-header-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.report-institution-name {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--acc-gold-500);
+  font-weight: 700;
+}
+
+.report-main-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.3px;
+  margin: 0;
+}
+
+.header-banner-right {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.header-badge-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--acc-slate-200);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1px;
+}
+
+.header-badge-chip.gold {
+  background: rgba(201, 168, 76, 0.18);
+  border-color: rgba(201, 168, 76, 0.4);
+  color: #fce7a1;
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   3. CONTROLS: DATE FILTER & LIVE SEARCH TOOLBAR
+   ────────────────────────────────────────────────────────────────── */
+.report-control-toolbar {
+  padding: 18px 24px;
+  background: var(--acc-slate-50);
+  border-bottom: 1px solid var(--acc-slate-200);
+}
+
+.toolbar-primary-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+.date-filters-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.filter-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.filter-label-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--acc-slate-500);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.date-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.modern-date-input {
+  background: #ffffff;
+  border: 1px solid var(--acc-slate-300);
+  color: var(--acc-navy-900);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  padding: 8px 12px;
+  border-radius: 8px;
+  outline: none;
+  transition: all 0.2s ease;
+  width: 148px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.modern-date-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.filter-apply-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--acc-navy-900);
+  color: #ffffff;
+  border: 1px solid var(--acc-navy-900);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.12);
+  transition: all 0.2s ease;
+  height: 37px;
+}
+
+.filter-apply-btn:hover {
+  background: var(--acc-navy-700);
+  box-shadow: 0 4px 8px rgba(15, 23, 42, 0.2);
+  transform: translateY(-1px);
+}
+
+.filter-apply-btn:active {
+  transform: translateY(0);
+}
+
+.filter-apply-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* In-table Live Search */
+.live-search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 260px;
+  max-width: 340px;
+  flex: 1;
+}
+
+.live-search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--acc-slate-400);
+  pointer-events: none;
+}
+
+.live-search-input {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid var(--acc-slate-300);
+  border-radius: 20px;
+  padding: 7px 34px 7px 36px;
+  font-size: 13px;
+  color: var(--acc-navy-900);
+  outline: none;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.live-search-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.search-clear-btn {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  color: var(--acc-slate-400);
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
+
+.search-clear-btn:hover {
+  color: #ef4444;
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   4. DATA TABLES & CELL STYLING
+   ────────────────────────────────────────────────────────────────── */
+.table-data-wrapper {
+  position: relative;
+  width: 100%;
+  overflow-x: auto;
+  min-height: 320px;
+  background: #ffffff;
+}
+
+.table-data-wrapper::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.table-data-wrapper::-webkit-scrollbar-track {
+  background: var(--acc-slate-100);
+}
+
+.table-data-wrapper::-webkit-scrollbar-thumb {
+  background: var(--acc-slate-300);
+  border-radius: 4px;
+}
+
+.table-data-wrapper::-webkit-scrollbar-thumb:hover {
+  background: var(--acc-slate-400);
+}
+
+.modern-report-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 13.5px;
+  text-align: left;
+}
+
+/* Sticky Headers */
+.modern-report-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--acc-navy-900);
+  color: var(--acc-slate-50);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding: 13px 16px;
+  border-bottom: 2px solid var(--acc-gold-500);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  white-space: nowrap;
+  user-select: none;
+  transition: background 0.15s ease;
+}
+
+.modern-report-table thead th:last-child {
+  border-right: none;
+}
+
+.modern-report-table thead th.sortable {
+  cursor: pointer;
+}
+
+.modern-report-table thead th.sortable:hover {
+  background: var(--acc-navy-700);
+  color: var(--acc-gold-500);
+}
+
+.th-content {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.th-content.right {
+  justify-content: flex-end;
+}
+
+.sort-indicator {
+  display: inline-flex;
+  align-items: center;
+  color: var(--acc-slate-400);
+  transition: color 0.15s ease;
+}
+
+.modern-report-table thead th.sortable:hover .sort-indicator,
+.sort-indicator.active {
+  color: var(--acc-gold-500);
+}
+
+/* Table Rows & Interactivity */
+.modern-report-table tbody tr {
+  background: #ffffff;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.modern-report-table tbody tr:nth-child(even) {
+  background: #fcfdfe;
+}
+
+.modern-report-table tbody tr:hover {
+  background: var(--acc-slate-100);
+  box-shadow: inset 3px 0 0 var(--acc-gold-500);
+}
+
+.modern-report-table tbody tr.row-selected {
+  background: #eff6ff !important;
+  box-shadow: inset 4px 0 0 #3b82f6;
+}
+
+.modern-report-table tbody tr.row-selected td {
+  border-bottom-color: #bfdbfe;
+}
+
+.modern-report-table td {
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--acc-slate-100);
+  border-right: 1px solid var(--acc-slate-50);
+  color: var(--acc-slate-800);
+  vertical-align: middle;
+}
+
+.modern-report-table td:last-child {
+  border-right: none;
+}
+
+/* Cell Badges & Components */
+.cell-index-badge {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--acc-slate-500);
+  background: var(--acc-slate-100);
+  padding: 3px 7px;
+  border-radius: 6px;
+  display: inline-block;
+  text-align: center;
+  min-width: 26px;
+}
+
+.student-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.student-name-text {
+  font-weight: 600;
+  color: var(--acc-navy-900);
+  font-size: 13.5px;
+}
+
+.student-sub-id {
+  font-size: 11px;
+  color: var(--acc-slate-500);
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-weight: 500;
+}
+
+/* Course Pill */
+.course-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 12px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.course-pill.bca { background: #e0e7ff; color: #3730a3; }
+.course-pill.dca { background: #fef3c7; color: #92400e; }
+.course-pill.adca { background: #dcfce7; color: #166534; }
+.course-pill.ccc { background: #f3e8ff; color: #6b21a8; }
+.course-pill.default { background: var(--acc-slate-100); color: var(--acc-slate-500); }
+
+/* Financial Amount Badges */
+.amount-badge-due {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-weight: 700;
+  font-size: 13.5px;
+  color: #b91c1c;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+.amount-badge-collected {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-weight: 700;
+  font-size: 13.5px;
+  color: #047857;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+.amount-badge-standard {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-weight: 700;
+  font-size: 13.5px;
+  color: var(--acc-navy-900);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Receipt Tag */
+.receipt-code-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-weight: 700;
+  font-size: 12px;
+  background: var(--acc-slate-50);
+  border: 1px solid var(--acc-slate-200);
+  color: var(--acc-slate-700);
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+/* Payment Mode (P Mode) Badges */
+.pmode-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.pmode-pill.cash {
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+}
+
+.pmode-pill.bank,
+.pmode-pill.online,
+.pmode-pill.upi {
+  background: #eff6ff;
+  color: #2563eb;
+  border: 1px solid #bfdbfe;
+}
+
+.pmode-pill.cheque {
+  background: #faf5ff;
+  color: #7c3aed;
+  border: 1px solid #e9d5ff;
+}
+
+.pmode-pill.other {
+  background: var(--acc-slate-100);
+  color: var(--acc-slate-500);
+  border: 1px solid var(--acc-slate-300);
+}
+
+/* Due Date with Status Tag */
+.due-date-cell-flex {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.date-text-primary {
+  font-weight: 500;
+  color: var(--acc-slate-700);
+}
+
+.status-tag-overdue {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: #fef2f2;
+  color: #ef4444;
+  border: 1px solid #fee2e2;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.status-tag-ok {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: #ecfdf5;
+  color: #10b981;
+  border: 1px solid #d1fae5;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   5. LOADING, EMPTY, AND ERROR STATES
+   ────────────────────────────────────────────────────────────────── */
+.empty-table-state,
+.loading-table-state,
+.error-table-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 20px;
+  text-align: center;
+  gap: 12px;
+}
+
+.empty-state-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--acc-slate-100);
+  color: var(--acc-slate-400);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-state-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--acc-slate-700);
+  margin: 0;
+}
+
+.empty-state-desc {
+  font-size: 13px;
+  color: var(--acc-slate-500);
+  max-width: 360px;
+  margin: 0;
+}
+
+.loading-spinner-ring {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--acc-slate-200);
+  border-top-color: var(--acc-gold-500);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   6. FINANCIAL KPI SUMMARY FOOTER
+   ────────────────────────────────────────────────────────────────── */
+.report-summary-footer {
+  background: linear-gradient(180deg, var(--acc-slate-50) 0%, var(--acc-slate-100) 100%);
+  padding: 18px 24px;
+  border-top: 1px solid var(--acc-slate-200);
+}
+
+.kpi-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.kpi-card {
+  background: #ffffff;
+  border: 1px solid var(--acc-slate-200);
+  border-radius: 14px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
+}
+
+.kpi-icon-badge {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.kpi-icon-badge.red {
+  background: #fef2f2;
+  color: #ef4444;
+  border: 1px solid #fecaca;
+}
+
+.kpi-icon-badge.green {
+  background: #ecfdf5;
+  color: #10b981;
+  border: 1px solid #a7f3d0;
+}
+
+.kpi-icon-badge.blue {
+  background: #eff6ff;
+  color: #3b82f6;
+  border: 1px solid #bfdbfe;
+}
+
+.kpi-icon-badge.gold {
+  background: var(--acc-gold-100);
+  color: #ca8a04;
+  border: 1px solid #fef08a;
+}
+
+.kpi-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.kpi-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--acc-slate-500);
+  letter-spacing: 0.3px;
+}
+
+.kpi-value {
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--acc-navy-900);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.3px;
+}
+
+.kpi-subtext {
+  font-size: 11px;
+  color: var(--acc-slate-400);
+}
+
+/* ──────────────────────────────────────────────────────────────────
+   7. PRINT & RESPONSIVE LAYOUT
+   ────────────────────────────────────────────────────────────────── */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .accounting-topbar,
+  .accounting-nav-tabs,
+  .report-selector-bar,
+  .report-control-toolbar,
+  .live-search-box {
+    display: none !important;
+  }
+
+  .report-tables-wrapper,
+  .report-sheet-card {
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  .report-header-banner,
+  .modern-report-table thead th {
+    background: var(--acc-navy-900) !important;
+    color: #ffffff !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .modern-report-table tbody tr {
+    page-break-inside: avoid;
+  }
+}
+
+@media (max-width: 768px) {
+  /* 1. Selector Bar: Hide desktop pills, show mobile dropdown */
+  .report-pills-group {
+    display: none !important;
+  }
+
+  .report-mobile-dropdown-container {
+    display: block !important;
+    width: 100%;
+  }
+
+  .report-selector-bar {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin-bottom: 12px;
+    width: 100%;
+    overflow: visible;
+  }
+
+  /* 2. Executive Report Sheet Card & Header Banner */
+  .report-sheet-card {
+    border-radius: 16px;
+  }
+  .report-header-banner {
+    padding: 14px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .header-banner-left {
+    gap: 10px;
+    width: 100%;
+  }
+  .report-icon-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    flex-shrink: 0;
+  }
+  .report-institution-name {
+    font-size: 10px;
+    letter-spacing: 0.8px;
+  }
+  .report-main-title {
+    font-size: 16px;
+  }
+  .header-banner-right {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .header-badge-chip {
+    padding: 4px 10px;
+    font-size: 11px;
+  }
+
+  /* 3. Date Filters & Live Search Toolbar */
+  .report-control-toolbar {
+    padding: 12px 14px;
+  }
+  .toolbar-primary-row {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .date-filters-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 8px;
+    width: 100%;
+  }
+  .filter-input-group {
+    min-width: 0;
+    width: 100%;
+  }
+  .filter-label-text {
+    font-size: 11px;
+    gap: 3px;
+  }
+  .date-input-wrapper {
+    width: 100%;
+  }
+  .modern-date-input {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 7px 8px;
+    font-size: 12px;
+    border-radius: 6px;
+  }
+  .filter-apply-btn {
+    grid-column: span 2;
+    width: 100%;
+    justify-content: center;
+    height: 38px;
+    font-size: 12.5px;
+    padding: 8px 14px;
+  }
+  .live-search-box {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+  }
+  .live-search-input {
+    font-size: 12.5px;
+    padding: 8px 32px 8px 34px;
+    box-sizing: border-box;
+  }
+
+  /* 4. Data Tables Responsive Horizontal Scroll */
+  .table-data-wrapper {
+    min-height: 240px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .modern-report-table {
+    min-width: 640px;
+  }
+  .modern-report-table thead th {
+    padding: 10px 10px;
+    font-size: 11px;
+    letter-spacing: 0.4px;
+  }
+  .modern-report-table tbody td {
+    padding: 10px 10px;
+    font-size: 12px;
+  }
+
+  /* 5. KPI Summary Footer */
+  .report-summary-footer {
+    padding: 12px 14px;
+  }
+  .kpi-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .kpi-card {
+    padding: 10px 12px;
+    gap: 10px;
+    border-radius: 10px;
+  }
+  .kpi-icon-badge {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+  }
+  .kpi-label {
+    font-size: 11px;
+  }
+  .kpi-value {
+    font-size: 17px;
+  }
+  .kpi-subtext {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .report-sheet-card {
+    border-radius: 12px;
+  }
+  .report-header-banner {
+    padding: 12px;
+  }
+  .report-main-title {
+    font-size: 15px;
+  }
+  .report-control-toolbar {
+    padding: 10px 12px;
+  }
+  .report-summary-footer {
+    padding: 10px 12px;
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
