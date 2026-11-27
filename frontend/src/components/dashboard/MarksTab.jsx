@@ -43,6 +43,14 @@ const MarksTab = ({ studentId }) => {
     return '#ef4444'; // red
   };
 
+  const getResultColor = (result) => {
+    if (!result) return '#64748b';
+    const normalized = String(result).trim().toLowerCase();
+    if (['pass', 'passed', 'qualified', 'clear'].includes(normalized)) return '#10b981';
+    if (['fail', 'failed', 'absent'].includes(normalized)) return '#ef4444';
+    return '#3b82f6';
+  };
+
   const totalPercent = tests.reduce((sum, test) => sum + parseFloat(test.percent || 0), 0);
   const avgPct = tests.length > 0 ? (totalPercent / tests.length) : 0;
 
@@ -72,6 +80,7 @@ const MarksTab = ({ studentId }) => {
               <tr>
                 <th className="text-muted fw-semibold text-start">TEST DATE</th>
                 <th className="text-muted fw-semibold text-end">OVERALL %</th>
+                <th className="text-muted fw-semibold text-center">RESULT</th>
                 <th className="expand-col text-center" style={{ width: '40px' }}></th>
               </tr>
             </thead>
@@ -107,6 +116,21 @@ const MarksTab = ({ studentId }) => {
                           {isNaN(pct) ? '0%' : `${pct}%`}
                         </span>
                       </td>
+                      <td className="text-center">
+                        {test.result ? (
+                          <span
+                            className="score-pill"
+                            style={{
+                              backgroundColor: `${getResultColor(test.result)}18`,
+                              color: getResultColor(test.result)
+                            }}
+                          >
+                            {test.result}
+                          </span>
+                        ) : (
+                          <span className="text-muted">—</span>
+                        )}
+                      </td>
                       <td className="expand-col text-center">
                         <button className="expand-btn" aria-label="Toggle details">
                           {isExpanded ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
@@ -117,7 +141,7 @@ const MarksTab = ({ studentId }) => {
                     {/* Expandable Details Section */}
                     {isExpanded && (
                       <tr className="expanded-details-tr">
-                        <td colSpan={3} className="expanded-details-td">
+                        <td colSpan={4} className="expanded-details-td">
                           <div className="graphical-chart-wrapper fade-in-down">
                             <div className="bar-chart-container d-flex flex-column gap-3">
                               {subjectsData.map((sub, cIdx) => {
@@ -164,6 +188,7 @@ const MarksTab = ({ studentId }) => {
                     {avgPct.toFixed(2)}%
                   </span>
                 </td>
+                <td></td>
                 <td className="expand-col"></td>
               </tr>
             </tbody>
