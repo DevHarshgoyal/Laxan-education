@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --inspect server.js",
     "seed:fees": "node seed_cloud_fees.js",
-    "create-user": "node create_user.js"
+    "create-user": "node create_user.js",
+    "zip": "node zip.js"
   },
   "keywords": [],
   "author": "",
